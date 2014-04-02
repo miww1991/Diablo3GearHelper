@@ -1,0 +1,19 @@
+﻿<Window
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Diablo3GearHelper.MainWindow"
+        Title="Diablo 3 Gear Helper" Height="300" Width="525">
+    <Canvas>
+        <Button Name="IdentifyButton" Click="IdentifyButton_OnClick"
+                Width="50" Height="25"
+                Canvas.Left="230" Canvas.Top="235">
+            <TextBlock>Identify</TextBlock>
+        </Button>
+        <TextBlock Text="Battletag Name"
+                   Height="22"
+                   Canvas.Top="20" Canvas.Left="10" />
+        <TextBox Name="BTagNameTextBox"
+                 Width="120"
+                 Canvas.Left="98" Canvas.Top="20"/>
+    </Canvas>
+</Window>
