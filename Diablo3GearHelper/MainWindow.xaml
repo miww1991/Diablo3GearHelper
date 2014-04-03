@@ -4,10 +4,10 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Diablo3GearHelper.MainWindow"
         Title="Diablo 3 Gear Helper" Height="300" Width="525">
     <Canvas>
-        <Button Name="IdentifyButton" Click="IdentifyButton_OnClick"
-                Width="50" Height="25"
-                Canvas.Left="230" Canvas.Top="235">
-            <TextBlock>Identify</TextBlock>
+        <Button Name="ImportCharactersButton" Click="ImportCharactersButton_OnClick"
+                Width="200" Height="25"
+                Canvas.Left="230" Canvas.Top="15">
+            <TextBlock>Import Characters from Battle.Net</TextBlock>
         </Button>
         <TextBlock Text="Battletag Name"
                    Height="22"
@@ -15,5 +15,6 @@
         <TextBox Name="BTagNameTextBox"
                  Width="120"
                  Canvas.Left="98" Canvas.Top="20"/>
+        <ComboBox Name="CharacterComboBox"  Canvas.Left="10" Canvas.Top="45" Width="120"/>
     </Canvas>
 </Window>

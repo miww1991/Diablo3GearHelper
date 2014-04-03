@@ -23,22 +23,47 @@ namespace Diablo3GearHelper
     /// </summary>
     public partial class MainWindow : Window
     {
+        private Hero[] _heroes;
+
         public MainWindow()
         {
             InitializeComponent();
+
+            BTagNameTextBox.Text = "Everix#1486"; // Temp for Testing
         }
 
 #region Event Handlers
-        private void IdentifyButton_OnClick(object sender, RoutedEventArgs e)
+
+        private void ImportCharactersButton_OnClick(object sender, RoutedEventArgs e)
         {
+            // Convert the entered battle tag into the format needed by the D3 API
             string battleTag = GetBattleTag();
             if (battleTag == null)
             {
-                MessageBox.Show("Invalid BattleTag entered. Please in the format \"Sandra#1192\"");
+                MessageBox.Show("Invalid BattleTag entered. Please enter in the format \"Elevarin#1192\"");
                 return;
             }
 
-            Hero[] heroes = WebDataRetriever.GetHeroes(battleTag);
+            // Using the battle tag entered, retrieve hero names
+            this._heroes = WebDataRetriever.GetHeroes(battleTag);
+
+            // Clear our characters combo box
+            this.CharacterComboBox.Items.Clear();
+
+            // If we have an invalid heroes list, return to avoid exceptions
+            if (_heroes == null || _heroes.Length <= 0)
+            {
+                return;
+            }
+            
+            // Add each hero to the list of characters
+            foreach (Hero hero in this._heroes)
+            {
+                this.CharacterComboBox.Items.Add(hero);
+            }
+
+            // Set our selection to the first character on the account
+            this.CharacterComboBox.SelectedIndex = 0;
         }
 
 #endregion
