@@ -13,6 +13,11 @@ namespace Diablo3GearHelper
 {
     public class WebDataRetriever
     {
+        /// <summary>
+        /// Retrieves all the heroes attached to the specified BattleTag
+        /// </summary>
+        /// <param name="battleTagString">The BattleTag to retrieve information from</param>
+        /// <returns>An array of all heroes attached to the specified BattleTag</returns>
         public static Hero[] GetHeroes(string battleTagString)
         {
             string webAddress = "http://us.battle.net/api/d3/profile/" + battleTagString + "/";
@@ -44,6 +49,11 @@ namespace Diablo3GearHelper
             }
 
             return heroes.ToArray();
+        }
+
+        public static void GetDetailedHeroInformation(string battleTagString, int id, ref Hero hero)
+        {
+
         }
 
         #region Helper Methods

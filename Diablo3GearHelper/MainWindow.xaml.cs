@@ -28,11 +28,14 @@ namespace Diablo3GearHelper
         public MainWindow()
         {
             InitializeComponent();
-
-            BTagNameTextBox.Text = "Everix#1486"; // Temp for Testing
         }
 
-#region Event Handlers
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            this.BTagNameTextBox.Text = "Everix#1486";  // Temp for Testing
+        }
+
+    #region Event Handlers
 
         private void ImportCharactersButton_OnClick(object sender, RoutedEventArgs e)
         {
@@ -64,11 +67,14 @@ namespace Diablo3GearHelper
 
             // Set our selection to the first character on the account
             this.CharacterComboBox.SelectedIndex = 0;
+
+            // Enable our ComboBox now that it has items in it
+            this.CharacterComboBox.IsEnabled = true;
         }
 
-#endregion
+    #endregion
 
-#region Helper methods
+    #region Helper methods
 
         private string GetBattleTag()
         {
@@ -81,8 +87,7 @@ namespace Diablo3GearHelper
             return tokens[0] + "-" + tokens[1];
         }
 
-#endregion
-
+    #endregion
 
     }
 }
