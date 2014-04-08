@@ -4,6 +4,11 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Diablo3GearHelper.MainWindow"
         Title="Diablo 3 Gear Helper" Height="300" Width="420" Loaded="Window_Loaded">
     <Canvas>
+        <Button Name="ImportCharacterButton" Click="ImportCharacterButton_OnClick"
+                Width="110" Height="25"
+                Canvas.Left="230" Canvas.Top="63">
+            <TextBlock>Import Character</TextBlock>
+        </Button>
         <Button Name="ImportCharactersButton" Click="ImportCharactersButton_OnClick"
                 Width="200" Height="25"
                 Canvas.Left="195" Canvas.Top="17">

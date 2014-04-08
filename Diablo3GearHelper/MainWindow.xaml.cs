@@ -1,19 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net;
-using System.Text;
-using System.Threading.Tasks;
+﻿//#define TESTING
+
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+using System.Collections.Generic;
 using Diablo3GearHelper.Types;
 
 namespace Diablo3GearHelper
@@ -24,6 +12,7 @@ namespace Diablo3GearHelper
     public partial class MainWindow : Window
     {
         private Hero[] _heroes;
+        private string battleTag;
 
         public MainWindow()
         {
@@ -32,23 +21,30 @@ namespace Diablo3GearHelper
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+//#if DEBUG && TESTING
             this.BTagNameTextBox.Text = "Everix#1486";  // Temp for Testing
+#if DEBUG && TESTING
+            // Temp to skip having to import account
+            Hero testHero = new Hero("Everix", 606264, 70, false, 101, HeroGender.Male, false, ClassType.Wizard, 1396632618);
+            this.CharacterComboBox.Items.Add(testHero);
+            this.CharacterComboBox.SelectedIndex = 0;
+            this.CharacterComboBox.IsEnabled = true;
+            this.battleTag = GetBattleTag();
+#endif
         }
-
-    #region Event Handlers
 
         private void ImportCharactersButton_OnClick(object sender, RoutedEventArgs e)
         {
             // Convert the entered battle tag into the format needed by the D3 API
-            string battleTag = GetBattleTag();
-            if (battleTag == null)
+            this.battleTag = GetBattleTag();
+            if (this.battleTag == null)
             {
                 MessageBox.Show("Invalid BattleTag entered. Please enter in the format \"Elevarin#1192\"");
                 return;
             }
 
             // Using the battle tag entered, retrieve hero names
-            this._heroes = WebDataRetriever.GetHeroes(battleTag);
+            this._heroes = WebDataRetriever.GetHeroes(this.battleTag);
 
             // Clear our characters combo box
             this.CharacterComboBox.Items.Clear();
@@ -60,10 +56,13 @@ namespace Diablo3GearHelper
             }
             
             // Add each hero to the list of characters
+            List<Hero> heroes = new List<Hero>();
             foreach (Hero hero in this._heroes)
             {
+                heroes.Add(hero);
                 this.CharacterComboBox.Items.Add(hero);
             }
+            this._heroes = heroes.ToArray();
 
             // Set our selection to the first character on the account
             this.CharacterComboBox.SelectedIndex = 0;
@@ -72,9 +71,11 @@ namespace Diablo3GearHelper
             this.CharacterComboBox.IsEnabled = true;
         }
 
-    #endregion
-
-    #region Helper methods
+        private void ImportCharacterButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Hero hero = this.CharacterComboBox.SelectedItem as Hero;
+            WebDataRetriever.GetDetailedHeroInformation(this.battleTag, ref hero);
+        }
 
         private string GetBattleTag()
         {
@@ -86,8 +87,5 @@ namespace Diablo3GearHelper
 
             return tokens[0] + "-" + tokens[1];
         }
-
-    #endregion
-
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -8,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using Diablo3GearHelper.Types;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Diablo3GearHelper
 {
@@ -20,72 +22,110 @@ namespace Diablo3GearHelper
         /// <returns>An array of all heroes attached to the specified BattleTag</returns>
         public static Hero[] GetHeroes(string battleTagString)
         {
+            // Create the list to store our heroes in
+            List<Hero> heroes = new List<Hero>();
+
+            // Assemble our the web address to send our api request to
             string webAddress = "http://us.battle.net/api/d3/profile/" + battleTagString + "/";
+
+            // Create our web request handler
             WebRequest webRequest = WebRequest.Create(webAddress);
 
+            // Get the response from the web request and convert it to a readable string
+            // TODO: Try/catch block to handle a WebException for 404 not found
             Stream responseStream = webRequest.GetResponse().GetResponseStream();
             StreamReader response = new StreamReader(responseStream);
             string responseString = response.ReadToEnd();
-            responseString = responseString.Replace("class", "classType");
-            responseString = responseString.Replace("last-updated", "lastUpdated");
 
-            dynamic stuff = JsonConvert.DeserializeObject(responseString);
+            // TODO: Try catch blocks for parsing the response
+            // Parse the JSON response from the web API into a JObject
+            JObject accountObject = JObject.Parse(responseString);
 
-            List<Hero> heroes = new List<Hero>();
-            foreach (dynamic item in stuff.heroes)
+            // Take all the hero entries from our JObject and put them into a list
+            List<JToken> results = accountObject["heroes"].Children().ToList();
+
+            // For all the hero entries that were in the JSON response, deserialize them into a hero object
+            foreach (JToken token in results)
             {
-                string name = item.name;
-                int id = item.id;
-                int level = item.level;
-                bool hardcore = item.hardcore;
-                int paragonLevel = item.paragonLevel;
-                HeroGender gender = (HeroGender)item.gender;
-                bool dead = item.dead;
-                ClassType heroClass = GetClassType((string)item.classType);
-                DateTime lastUpdated = FromUnixTime((long)item.lastUpdated);
-
-                Hero h = new Hero(name, id, level, hardcore, paragonLevel, gender, dead, heroClass, lastUpdated);
-                heroes.Add(h);
+                heroes.Add(JsonConvert.DeserializeObject<Hero>(token.ToString()));
             }
 
+            // Return the list of heroes
             return heroes.ToArray();
         }
 
-        public static void GetDetailedHeroInformation(string battleTagString, int id, ref Hero hero)
+        public static void GetDetailedHeroInformation(string battleTagString, ref Hero hero)
         {
+            // Assemble our the web address to send our api request to
+            string webAddress = "http://us.battle.net/api/d3/profile/" + battleTagString + "/hero/" + hero.Id;
 
+            // Create our web request handler
+            WebRequest webRequest = WebRequest.Create(webAddress);
+
+            // Get the response from the web request and convert it to a readable string
+            Stream responseStream = webRequest.GetResponse().GetResponseStream();
+            StreamReader response = new StreamReader(responseStream);
+            string responseString = response.ReadToEnd();
+
+            // Parse the JSON response from the web API into a JObject
+            JObject heroObject = JObject.Parse(responseString);
+
+            // Extract the information and store it in our hero object
+            ParseHeroInformationIntoObject(heroObject, ref hero);
         }
 
-        #region Helper Methods
-
-        // Thanks to LukeH at http://stackoverflow.com/questions/2883576/how-do-you-convert-epoch-time-in-c
-        private static DateTime FromUnixTime(long unixTime)
+        private static void ParseHeroInformationIntoObject(JObject rawInformation, ref Hero hero)
         {
-            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-            return epoch.AddSeconds(unixTime);
-        }
+            List<JToken> activeSkills = rawInformation["skills"]["active"].Children().ToList();
+            List<JToken> passiveSkills = rawInformation["skills"]["passive"].Children().ToList();
+            List<JToken> items = rawInformation["items"].Children().ToList();
+            JObject itemsObj = rawInformation["items"].Value<JObject>();
+            List<JToken> values = itemsObj.Values().ToList();
 
-        private static ClassType GetClassType(string classString)
-        {
-            switch (classString)
+            Debug.Assert(activeSkills.Count <= hero.ActiveSkills.Length);
+            for (int i = 0; i < activeSkills.Count; i++)
             {
-                case "barbarian":
-                    return ClassType.Barbarian;
-                case "crusader":
-                    return ClassType.Crusader;
-                case "demon-hunter":
-                    return ClassType.DemonHunter;
-                case "monk":
-                    return ClassType.Monk;
-                case "witch-doctor":
-                    return ClassType.WitchDoctor;
-                case "wizard":
-                    return ClassType.Wizard;
-                default:
-                    return ClassType.InvalidClassType;
+                hero.ActiveSkills[i] = (activeSkills[i])["skill"]["name"].Value<string>();
+            }
+
+            Debug.Assert(passiveSkills.Count <= hero.PassiveSkills.Length);
+            for (int i = 0; i < passiveSkills.Count; i++)
+            {
+                hero.PassiveSkills[i] = (passiveSkills[i])["skill"]["name"].Value<string>();
+            }
+
+            Debug.Assert(activeSkills.Count <= hero.Runes.Length);
+            for (int i = 0; i < activeSkills.Count; i++)
+            {
+                hero.Runes[i] = (activeSkills[i])["rune"]["name"].Value<string>();
+            }
+
+            foreach (JToken item in values)
+            {
+                string type = itemsObj.Properties().ToList()[values.IndexOf(item)].Name;
+                ItemSlot slot = (ItemSlot)Enum.Parse(typeof(ItemSlot), type);
+                Item newItem = new Item(slot);
+
+                string tooltipParams = item.Value<string>("tooltipParams");
+                string url = "http://us.battle.net/api/d3/data/" + tooltipParams;
+                GetItemInfo(url, ref newItem);
             }
         }
 
-        #endregion
+        private static void GetItemInfo(string url, ref Item item)
+        {
+            // Create our web request handler
+            WebRequest webRequest = WebRequest.Create(url);
+
+            // Get the response from the web request and convert it to a readable string
+            Stream responseStream = webRequest.GetResponse().GetResponseStream();
+            StreamReader response = new StreamReader(responseStream);
+            string responseString = response.ReadToEnd();
+
+            // Parse the JSON response from the web API into a JObject
+            JObject heroObject = JObject.Parse(responseString);
+
+            return item;
+        }
     }
 }

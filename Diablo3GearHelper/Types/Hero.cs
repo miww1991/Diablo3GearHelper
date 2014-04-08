@@ -1,23 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace Diablo3GearHelper.Types
 {
     /// <summary>
     /// The various Classes in Diablo 3
     /// </summary>
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum ClassType
     {
+        [EnumMember(Value = "barbarian")]
         Barbarian,
+        [EnumMember(Value = "crusader")]
         Crusader,
+        [EnumMember(Value = "demon-hunter")]
         DemonHunter,
+        [EnumMember(Value = "monk")]
         Monk,
+        [EnumMember(Value = "witch-doctor")]
         WitchDoctor,
+        [EnumMember(Value = "wizard")]
         Wizard,
-        InvalidClassType,
 
         ClassCount
     }
@@ -29,7 +38,6 @@ namespace Diablo3GearHelper.Types
     {
         Male,
         Female,
-        InvalidGenderType,
 
         GenderCount
     }
@@ -47,8 +55,15 @@ namespace Diablo3GearHelper.Types
         };
 
         /// <summary>
+        /// The skills of the hero
+        /// Note: This will later be updated to be something other than strings
+        /// </summary>
+        public string[] ActiveSkills { get; set; }
+
+        /// <summary>
         /// The Hero's Class
         /// </summary>
+        [JsonProperty("class")]
         public ClassType Class { get; private set; }
 
         /// <summary>
@@ -62,6 +77,7 @@ namespace Diablo3GearHelper.Types
         /// <summary>
         /// The gender of the Hero
         /// </summary>
+        //[JsonProperty("gender")]
         public HeroGender Gender { get; private set; }
 
         /// <summary>
@@ -80,9 +96,21 @@ namespace Diablo3GearHelper.Types
         public bool IsHardcore { get; private set; }
 
         /// <summary>
+        /// Date last updated in seconds since epoch
+        /// </summary>
+        [JsonProperty("last-updated")]
+        private int _lastUpdatedEpoch;
+
+        /// <summary>
         /// The last time this Hero was updated
         /// </summary>
-        public DateTime LastUpdated { get; private set; }
+        public DateTime LastUpdated
+        {
+            get
+            {
+                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddSeconds(this._lastUpdatedEpoch);
+            }
+        }
 
         /// <summary>
         /// The Level of the Hero
@@ -100,21 +128,21 @@ namespace Diablo3GearHelper.Types
         public int ParagonLevel { get; private set; }
 
         /// <summary>
-        /// The runes for the hero's skills. These must match up with the Skills indexes.
-        /// Note: This will later be updated to be something other than strings
-        /// </summary>
-        public string[] Runes { get; set; }
-
-        /// <summary>
         /// The skills of the hero
         /// Note: This will later be updated to be something other than strings
         /// </summary>
-        public string[] Skills { get; set; }
+        public string[] PassiveSkills { get; set; }
+
+        /// <summary>
+        /// The runes for the hero's skills. These must match up with the Skills indexes.
+        /// Note: This will later be updated to be something other than strings
+        /// </summary>
+        public string[] Runes { get; set; }    
 
         /// <summary>
         /// Constructs a Hero Object
         /// </summary>
-        public Hero(string name, int id, int level, bool isHardcore, int paragonLevel, HeroGender gender, bool isDead, ClassType charClass, DateTime lastUpdated)
+        public Hero(string name, int id, int level, bool isHardcore, int paragonLevel, HeroGender gender, bool isDead, ClassType charClass, int lastUpdated)
         {
             this.Name = name;
             this.Id = id;
@@ -124,8 +152,9 @@ namespace Diablo3GearHelper.Types
             this.Gender = gender;
             this.IsDead = isDead;
             this.Class = charClass;
-            this.LastUpdated = lastUpdated;
-            this.Skills = new string[6];
+            this._lastUpdatedEpoch = lastUpdated;
+            this.ActiveSkills = new string[6];
+            this.PassiveSkills = new string[4];
             this.Runes = new string[6];
         }
 
