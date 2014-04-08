@@ -107,56 +107,69 @@ namespace Diablo3GearHelper
                 string type = itemsObj.Properties().ToList()[values.IndexOf(item)].Name;
                 string fakeJson = '"' + type + '"';
                 ItemSlot slot = JsonConvert.DeserializeObject<ItemSlot>(fakeJson);
-                Item newItem = new Item(slot);
+                Item newItem = null;
 
-                string tooltipParams = item.Value<string>("tooltipParams");
-                string url = "http://us.battle.net/api/d3/data/" + tooltipParams;
-                GetItemInfo(url, ref newItem);
-
-                switch(newItem.Slot)
+                switch (slot)
                 {
-                    case ItemSlot.Head:
-                        hero.Gear.Helm = newItem;
+                    case ItemSlot.Helm:
+                        newItem = new Helm();
+                        hero.Gear.Helm = newItem as Helm;
                         break;
-                    case ItemSlot.Neck:
-                        hero.Gear.Amulet = newItem;
+                    case ItemSlot.Amulet:
+                        newItem = new Amulet();
+                        hero.Gear.Amulet = newItem as Amulet;
                         break;
                     case ItemSlot.Bracers:
-                        hero.Gear.Bracers = newItem;
+                        newItem = new Bracers();
+                        hero.Gear.Bracers = newItem as Bracers;
                         break;
-                    case ItemSlot.Feet:
-                        hero.Gear.Boots = newItem;
+                    case ItemSlot.Boots:
+                        newItem = new Boots();
+                        hero.Gear.Boots = newItem as Boots;
                         break;
-                    case ItemSlot.Hands:
-                        hero.Gear.Gloves = newItem;
+                    case ItemSlot.Gloves:
+                        newItem = new Gloves();
+                        hero.Gear.Gloves = newItem as Gloves;
                         break;
-                    case ItemSlot.LeftFinger:
-                        hero.Gear.LeftFinger = newItem;
+                    case ItemSlot.LeftRing:
+                        newItem = new Ring(ItemSlot.LeftRing);
+                        hero.Gear.LeftRing = newItem as Ring;
                         break;
-                    case ItemSlot.RightFinger:
-                        hero.Gear.RightFinger = newItem;
+                    case ItemSlot.RightRing:
+                        newItem = new Ring(ItemSlot.RightRing);
+                        hero.Gear.RightRing = newItem as Ring;
                         break;
-                    case ItemSlot.Legs:
-                        hero.Gear.Pants = newItem;
+                    case ItemSlot.Pants:
+                        newItem = new Pants();
+                        hero.Gear.Pants = newItem as Pants;
                         break;
                     case ItemSlot.MainHand:
-                        hero.Gear.MainHand = newItem;
+                        newItem = new Weapon(ItemSlot.MainHand);
+                        hero.Gear.MainHand = newItem as Weapon;
                         break;
                     case ItemSlot.OffHand:
-                        hero.Gear.Helm = newItem;
+                        newItem = new OffHand();
+                        hero.Gear.OffHand = newItem as OffHand;
                         break;
                     case ItemSlot.Shoulders:
-                        hero.Gear.Shoulders = newItem;
+                        newItem = new Shoulders();
+                        hero.Gear.Shoulders = newItem as Shoulders;
                         break;
-                    case ItemSlot.Torso:
-                        hero.Gear.Chest = newItem;
+                    case ItemSlot.Chest:
+                        newItem = new Chest();
+                        hero.Gear.Chest = newItem as Chest;
                         break;
-                    case ItemSlot.Waist:
-                        hero.Gear.Belt = newItem;
+                    case ItemSlot.Belt:
+                        newItem = new Belt();
+                        hero.Gear.Belt = newItem as Belt;
                         break;
                     default:
                         throw new InvalidDataException();
                 }
+
+                string tooltipParams = item.Value<string>("tooltipParams");
+                string url = "http://us.battle.net/api/d3/data/" + tooltipParams;
+                GetItemInfo(url, ref newItem);
             }
         }
 
@@ -173,7 +186,37 @@ namespace Diablo3GearHelper
             // Parse the JSON response from the web API into a JObject
             JObject heroObject = JObject.Parse(responseString);
 
-            JsonConvert.PopulateObject(responseString, item);
+            JsonSerializerSettings settings = new JsonSerializerSettings();
+            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+
+            JsonConvert.PopulateObject(responseString, item, settings);
+
+            switch (item.Slot)
+            {
+                case ItemSlot.MainHand:
+                    (item as Weapon).AttacksPerSecond = GetAverageValueFloat(heroObject["attacksPerSecond"]);
+                    (item as Weapon).MinDamage = GetAverageValueInt(heroObject["minDamage"]);
+                    (item as Weapon).MaxDamage = GetAverageValueInt(heroObject["maxDamage"]);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private static float GetAverageValueFloat(JToken container) 
+        {
+            float min = JsonConvert.DeserializeObject<float>(container["min"].ToString());
+            float max = JsonConvert.DeserializeObject<float>(container["max"].ToString());
+            float average = (min + max) / 2.0f;
+            return average;
+        }
+
+        private static int GetAverageValueInt(JToken container)
+        {
+            int min = JsonConvert.DeserializeObject<int>(container["min"].ToString());
+            int max = JsonConvert.DeserializeObject<int>(container["max"].ToString());
+            int average = (min + max) / 2;
+            return average;
         }
     }
 }

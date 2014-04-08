@@ -30,15 +30,15 @@ namespace Diablo3GearHelper.Types
     public enum ItemSlot
     {
         [EnumMember(Value = "head")]
-        Head,
+        Helm,
         [EnumMember(Value = "torso")]
-        Torso,
+        Chest,
         [EnumMember(Value = "legs")]
-        Legs,
+        Pants,
         [EnumMember(Value = "feet")]
-        Feet,
+        Boots,
         [EnumMember(Value = "hands")]
-        Hands,
+        Gloves,
         [EnumMember(Value = "shoulders")]
         Shoulders,
         [EnumMember(Value = "bracers")]
@@ -48,13 +48,13 @@ namespace Diablo3GearHelper.Types
         [EnumMember(Value = "offHand")]
         OffHand,
         [EnumMember(Value = "waist")]
-        Waist,
+        Belt,
         [EnumMember(Value = "leftFinger")]
-        LeftFinger,
+        LeftRing,
         [EnumMember(Value = "rightFinger")]
-        RightFinger,
+        RightRing,
         [EnumMember(Value = "neck")]
-        Neck,
+        Amulet,
 
         ItemSlotCount
     }

@@ -61,6 +61,18 @@
     <Compile Include="Types\Affix.cs" />
     <Compile Include="Types\Gear.cs" />
     <Compile Include="Types\Item.cs" />
+    <Compile Include="Types\ItemTypes\Amulet.cs" />
+    <Compile Include="Types\ItemTypes\Belt.cs" />
+    <Compile Include="Types\ItemTypes\Boots.cs" />
+    <Compile Include="Types\ItemTypes\Bracers.cs" />
+    <Compile Include="Types\ItemTypes\Chest.cs" />
+    <Compile Include="Types\ItemTypes\Gloves.cs" />
+    <Compile Include="Types\ItemTypes\Helm.cs" />
+    <Compile Include="Types\ItemTypes\OffHand.cs" />
+    <Compile Include="Types\ItemTypes\Pants.cs" />
+    <Compile Include="Types\ItemTypes\Ring.cs" />
+    <Compile Include="Types\ItemTypes\Shoulders.cs" />
+    <Compile Include="Types\ItemTypes\Weapon.cs" />
     <Compile Include="WebDataRetriever.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
