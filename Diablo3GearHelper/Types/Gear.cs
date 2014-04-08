@@ -11,6 +11,30 @@ namespace Diablo3GearHelper.Types
     {
         public Item Helm { get; set; }
 
+        public Item Amulet { get; set; }
+
+        public Item Shoulders { get; set; }
+
+        public Item Gloves { get; set; }
+
+        public Item Chest { get; set; }
+
+        public Item Bracers { get; set; }
+
+        public Item Belt { get; set; }
+
+        public Item LeftFinger { get; set; }
+
+        public Item RightFinger { get; set; }
+
+        public Item Pants { get; set; }
+
+        public Item Boots { get; set; }
+
+        public Item MainHand { get; set; }
+
+        public Item OffHand { get; set; }
+
         public Gear()
         {
 

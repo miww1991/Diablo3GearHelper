@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using Diablo3GearHelper.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Converters;
 
 namespace Diablo3GearHelper
 {
@@ -100,15 +101,62 @@ namespace Diablo3GearHelper
                 hero.Runes[i] = (activeSkills[i])["rune"]["name"].Value<string>();
             }
 
+            hero.Gear = new Gear();
             foreach (JToken item in values)
             {
                 string type = itemsObj.Properties().ToList()[values.IndexOf(item)].Name;
-                ItemSlot slot = (ItemSlot)Enum.Parse(typeof(ItemSlot), type);
+                string fakeJson = '"' + type + '"';
+                ItemSlot slot = JsonConvert.DeserializeObject<ItemSlot>(fakeJson);
                 Item newItem = new Item(slot);
 
                 string tooltipParams = item.Value<string>("tooltipParams");
                 string url = "http://us.battle.net/api/d3/data/" + tooltipParams;
                 GetItemInfo(url, ref newItem);
+
+                switch(newItem.Slot)
+                {
+                    case ItemSlot.Head:
+                        hero.Gear.Helm = newItem;
+                        break;
+                    case ItemSlot.Neck:
+                        hero.Gear.Amulet = newItem;
+                        break;
+                    case ItemSlot.Bracers:
+                        hero.Gear.Bracers = newItem;
+                        break;
+                    case ItemSlot.Feet:
+                        hero.Gear.Boots = newItem;
+                        break;
+                    case ItemSlot.Hands:
+                        hero.Gear.Gloves = newItem;
+                        break;
+                    case ItemSlot.LeftFinger:
+                        hero.Gear.LeftFinger = newItem;
+                        break;
+                    case ItemSlot.RightFinger:
+                        hero.Gear.RightFinger = newItem;
+                        break;
+                    case ItemSlot.Legs:
+                        hero.Gear.Pants = newItem;
+                        break;
+                    case ItemSlot.MainHand:
+                        hero.Gear.MainHand = newItem;
+                        break;
+                    case ItemSlot.OffHand:
+                        hero.Gear.Helm = newItem;
+                        break;
+                    case ItemSlot.Shoulders:
+                        hero.Gear.Shoulders = newItem;
+                        break;
+                    case ItemSlot.Torso:
+                        hero.Gear.Chest = newItem;
+                        break;
+                    case ItemSlot.Waist:
+                        hero.Gear.Belt = newItem;
+                        break;
+                    default:
+                        throw new InvalidDataException();
+                }
             }
         }
 
@@ -125,7 +173,7 @@ namespace Diablo3GearHelper
             // Parse the JSON response from the web API into a JObject
             JObject heroObject = JObject.Parse(responseString);
 
-            return item;
+            JsonConvert.PopulateObject(responseString, item);
         }
     }
 }

@@ -75,6 +75,11 @@ namespace Diablo3GearHelper.Types
         }
 
         /// <summary>
+        /// The Hero's Gear
+        /// </summary>
+        public Gear Gear { get; set; }
+
+        /// <summary>
         /// The gender of the Hero
         /// </summary>
         //[JsonProperty("gender")]

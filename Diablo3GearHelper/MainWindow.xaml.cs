@@ -1,4 +1,4 @@
-﻿//#define TESTING
+﻿#define TESTING
 
 using System.Windows;
 using System.Collections.Generic;

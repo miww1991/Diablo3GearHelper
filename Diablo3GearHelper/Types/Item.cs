@@ -32,7 +32,7 @@ namespace Diablo3GearHelper.Types
         [EnumMember(Value = "head")]
         Head,
         [EnumMember(Value = "torso")]
-        Chest,
+        Torso,
         [EnumMember(Value = "legs")]
         Legs,
         [EnumMember(Value = "feet")]
