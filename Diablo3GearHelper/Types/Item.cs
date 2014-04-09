@@ -62,6 +62,17 @@ namespace Diablo3GearHelper.Types
     public class Item
     {
         /// <summary>
+        /// Is the item Enchanted?
+        /// </summary>
+        public bool Enchanted
+        {
+            get
+            {
+                return (PrimaryAffixes.Any(affix => affix.Enchanted == true) || SecondaryAffixes.Any(affix => affix.Enchanted == true));
+            }
+        }
+
+        /// <summary>
         /// The Id of the Item
         /// </summary>
         [JsonProperty("id")]
