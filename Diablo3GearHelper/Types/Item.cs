@@ -96,7 +96,7 @@ namespace Diablo3GearHelper.Types
         public List<Affix> SecondaryAffixes { get; set; }
 
         /// <summary>
-        /// The Slot the Item goes in to
+        /// The Slot the Item goes in
         /// </summary>
         public ItemSlot Slot { get; protected set; }
 

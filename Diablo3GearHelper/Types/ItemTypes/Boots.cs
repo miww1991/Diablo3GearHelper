@@ -8,6 +8,8 @@ namespace Diablo3GearHelper.Types
 {
     public class Boots : Item
     {
+        public int BaseArmor { get; protected set; }
+
         public Boots() : base(ItemSlot.Boots) { }
     }
 }

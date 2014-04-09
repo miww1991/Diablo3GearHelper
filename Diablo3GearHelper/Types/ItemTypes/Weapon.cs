@@ -9,10 +9,10 @@ namespace Diablo3GearHelper.Types
 {
     public class Weapon : Item
     {
-        [JsonIgnore]
+        [JsonProperty("ignoreMe1")]
         public float AttacksPerSecond { get; set; }
 
-        [JsonProperty("ignoreMe")]
+        [JsonProperty("ignoreMe2")]
         public int DPS
         {
             get
@@ -21,10 +21,10 @@ namespace Diablo3GearHelper.Types
             }
         }
 
-        [JsonProperty("ignoreMe1")]
+        [JsonProperty("ignoreMe3")]
         public int MinDamage;
 
-        [JsonProperty("ignoreMe2")]
+        [JsonProperty("ignoreMe4")]
         public int MaxDamage { get; set; }
 
         public Weapon(ItemSlot slot) : base(slot) { }
