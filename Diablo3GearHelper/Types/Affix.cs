@@ -18,18 +18,6 @@ namespace Diablo3GearHelper.Types
 
     public class Affix
     {
-        public struct AffixTable
-        {
-            AffixType Type;
-            AffixQuality Quality;
-            string DisplayString;
-        }
-
-        public static AffixTable[] AffixTable =
-        {
-            { AffixType.Intelligence, AffixQuality.Primary, "{1} Intelligence" }
-        };
-
         /// <summary>
         /// The quality of the Affix (either Primary or Secondary)
         /// </summary>

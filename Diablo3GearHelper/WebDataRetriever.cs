@@ -11,11 +11,14 @@ using Diablo3GearHelper.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json.Converters;
+using System.Text.RegularExpressions;
 
 namespace Diablo3GearHelper
 {
     public class WebDataRetriever
     {
+        private static AffixLookupTable affixLookupTable = AffixLookupTable.Instance;
+
         /// <summary>
         /// Retrieves all the heroes attached to the specified BattleTag
         /// </summary>
@@ -190,7 +193,6 @@ namespace Diablo3GearHelper
             JsonConvert.PopulateObject(responseString, item);
 
             List<JToken> RawAffixes = affixesObject.Children().ToList();
-
             foreach (JToken affixToken in RawAffixes)
             {
                 string affixString = affixesObject.Properties().ToList()[RawAffixes.IndexOf(affixToken)].Name;
@@ -204,6 +206,22 @@ namespace Diablo3GearHelper
                     item.PrimaryAffixes.Add(affix);
                 }
                 catch (JsonSerializationException) { }
+            }
+
+            List<JToken> prettyAffixes = parsedAttributesObject["primary"].Children().ToList();
+            prettyAffixes.AddRange(parsedAttributesObject["secondary"].Children());
+
+            foreach (JToken token in prettyAffixes)
+            {
+                string text = token["text"].Value<string>();
+                text = text.Replace("+", "");
+
+                Regex regExp = new Regex(@"\d+");
+                Match match = regExp.Match(text);
+
+                text = text.Replace(match.ToString(), "{1}");
+
+                //affixLookupTable.Table.Wher
             }
 
             switch (item.Slot)
