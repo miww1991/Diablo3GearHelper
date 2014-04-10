@@ -101,7 +101,6 @@ namespace Diablo3GearHelper
                 hero.Runes[i] = (activeSkills[i])["rune"]["name"].Value<string>();
             }
 
-            hero.Gear = new Gear();
             foreach (JToken item in values)
             {
                 string type = itemsObj.Properties().ToList()[values.IndexOf(item)].Name;
@@ -185,11 +184,27 @@ namespace Diablo3GearHelper
 
             // Parse the JSON response from the web API into a JObject
             JObject heroObject = JObject.Parse(responseString);
+            JObject parsedAttributesObject = heroObject["attributes"].Value<JObject>();
+            JObject affixesObject = heroObject["attributesRaw"].Value<JObject>();
 
-            JsonSerializerSettings settings = new JsonSerializerSettings();
-            settings.MissingMemberHandling = MissingMemberHandling.Ignore;
+            JsonConvert.PopulateObject(responseString, item);
 
-            JsonConvert.PopulateObject(responseString, item, settings);
+            List<JToken> RawAffixes = affixesObject.Children().ToList();
+
+            foreach (JToken affixToken in RawAffixes)
+            {
+                string affixString = affixesObject.Properties().ToList()[RawAffixes.IndexOf(affixToken)].Name;
+                string fakeJson = '"' + affixString + '"';
+                try
+                {
+                    AffixType affixType = JsonConvert.DeserializeObject<AffixType>(fakeJson);
+                    Affix affix = new Affix();
+                    affix.AffixType = affixType;
+                    affix.Value = GetAverageValueFloat(affixesObject[affixString]);
+                    item.PrimaryAffixes.Add(affix);
+                }
+                catch (JsonSerializationException) { }
+            }
 
             switch (item.Slot)
             {
@@ -203,7 +218,7 @@ namespace Diablo3GearHelper
             }
         }
 
-        private static float GetAverageValueFloat(JToken container) 
+        private static float GetAverageValueFloat(JToken container)
         {
             float min = JsonConvert.DeserializeObject<float>(container["min"].ToString());
             float max = JsonConvert.DeserializeObject<float>(container["max"].ToString());

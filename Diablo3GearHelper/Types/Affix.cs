@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Serialization;
@@ -13,6 +15,7 @@ namespace Diablo3GearHelper.Types
         Secondary
     }
 
+    [JsonConverter(typeof(StringEnumConverter))]
     public enum AffixType
     {
         // Primary Stats
@@ -27,62 +30,75 @@ namespace Diablo3GearHelper.Types
 
         // Offensive Stats
         AverageDamage,
+        //[EnumMember(Value = "")]
         PercentDamage,
+        [EnumMember(Value = "Crit_Percent_Bonus_Capped")]
         CriticalHitChance,
+        [EnumMember(Value = "Crit_Damage_Percent")]
         CriticalHitDamage,
+        //[EnumMember(Value = "")]
         PercentDamageAgainstElites,
+        [EnumMember(Value = "Attacks_Per_Second_Percent")]
         AttackSpeed,
+        //[EnumMember(Value = "")]
         AreaDamage,
 
         // Defensive Stats
+        //[EnumMember(Value = "")]
         PercentLife,
         [EnumMember(Value = "Armor_Bonus_Item")]
         BonusArmor,
+        [EnumMember(Value = "Thorns_Fixed#Physical")]
         Thorns,
+        [EnumMember(Value = "Resistance_All")]
         AllResistances,
+        [EnumMember(Value = "Resistance#Fire")]
         FireResistance,
+        [EnumMember(Value = "Resistance#Cold")]
         ColdResistance,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Resistance#Lightning")]
         LightningResistance,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Resistance#Arcane")]
         ArcaneResistance,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Resistance#Poison")]
+        PoisonResistance,
+        [EnumMember(Value = "Damage_Percent_Reduction_From_Ranged")]
         ReducedDamageFromRangedAttacks,
 
         // Elemental Damage
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Arcane")]
         ArcaneDamage,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Fire")]
         FireDamage,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Cold")]
         ColdDamage,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Lightning")]
         LightningDamage,
 
         // Healing
-        [EnumMember(Value = "")]
+        //[EnumMember(Value = "")]
         LifeOnHit,
-        [EnumMember(Value = "")]
+        //[EnumMember(Value = "")]
         LifePerKill,
-        [EnumMember(Value = "")]
+        //[EnumMember(Value = "")]
         LifePerSecond,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Health_Globe_Bonus_Health")]
         HealthGloveAndPotionExtraLife,
 
         // Utility
-        [EnumMember(Value = "")]
+        //[EnumMember(Value = "")]
         ResourceCostReduction,
-        [EnumMember(Value = "")]
+        //[EnumMember(Value = "")]
         CooldownReduction,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Gold_PickUp_Radius")]
         GoldPickupRadius,
-        [EnumMember(Value = "")]
+        //[EnumMember(Value = "")]
         BonusExperienceOnKill,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Experience_Bonus_Percent")]
         BonusExperiencePercent,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Movement_Scalar")]
         MovementSpeed,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Gold_Find")]
         ExtraGoldFromMonsters,
 
         // Sockets
@@ -90,33 +106,37 @@ namespace Diablo3GearHelper.Types
         Sockets,
 
         // Wizard Skills
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_ArcaneTorrent")]
         ArcaneTorrentDamage,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_ArcaneOrb")]
         ArcaneOrbDamage,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_Disintegrate")]
         DistintegrateDamage,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_BlackHole")]
         BlackHoleDamage,
 
         // Wizard Utilities
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Resource_On_Crit#Arcanum")]
         ArcanePowerOnCrit,
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Resource_Max_Bonus#Arcanum")]
         MaximumArcanePower,
 
         // Miscellaneous
-        [EnumMember(Value = "")]
+        [EnumMember(Value = "Item_Level_Requirement_Reduction")]
         ReducedLevelRequirement,
-        [EnumMember(Value = "")]
-        ChanceToImmobilizeOnHit,
+        [EnumMember(Value = "On_Hit_Immobilize_Proc_Chance")]
+        ChanceToImmobilizeOnHit
     }
 
     public class Affix
     {
         public bool Enchanted { get; set; }
 
-        public int Value { get; set; }
+        public float Value { get; set; }
+
+        public AffixType AffixType { get; set; }
+
+        public AffixQuality AffixQuality { get; set; }
 
         public Affix()
         {

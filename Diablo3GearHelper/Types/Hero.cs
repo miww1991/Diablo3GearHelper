@@ -45,7 +45,7 @@ namespace Diablo3GearHelper.Types
     public class Hero
     {
         /// <summary>
-        /// An array of strings that correlate with the classes in Diablo 3. 
+        /// An array of strings that correlate with the classes in Diablo 3.
         /// Indexes must match up with the classes enumeration
         /// </summary>
         private readonly string[] _classStrings =
@@ -74,10 +74,22 @@ namespace Diablo3GearHelper.Types
             get { return _classStrings[(int) this.Class]; }
         }
 
+        private Gear _gear = new Gear();
+
         /// <summary>
         /// The Hero's Gear
         /// </summary>
-        public Gear Gear { get; set; }
+        public Gear Gear
+        {
+            get
+            {
+                return _gear;
+            }
+            set
+            {
+                this._gear = value;
+            }
+        }
 
         /// <summary>
         /// The gender of the Hero
@@ -89,7 +101,7 @@ namespace Diablo3GearHelper.Types
         /// The Id of the Hero
         /// </summary>
         public int Id { get; private set; }
-        
+
         /// <summary>
         /// Indicates whether this Hero is dead
         /// </summary>
@@ -142,7 +154,7 @@ namespace Diablo3GearHelper.Types
         /// The runes for the hero's skills. These must match up with the Skills indexes.
         /// Note: This will later be updated to be something other than strings
         /// </summary>
-        public string[] Runes { get; set; }    
+        public string[] Runes { get; set; }
 
         /// <summary>
         /// Constructs a Hero Object

@@ -90,10 +90,22 @@ namespace Diablo3GearHelper.Types
         [JsonProperty("name")]
         public string Name { get; protected set; }
 
+        private List<Affix> _primaryAffixes = new List<Affix>();
+
         /// <summary>
         /// The Primary Affixes on the Item
         /// </summary>
-        public List<Affix> PrimaryAffixes { get; set; }
+        public List<Affix> PrimaryAffixes
+        {
+            get
+            {
+                return _primaryAffixes;
+            }
+            set
+            {
+                this._primaryAffixes = value;
+            }
+        }
 
         /// <summary>
         /// The Quality of the Item
@@ -101,10 +113,22 @@ namespace Diablo3GearHelper.Types
         [JsonProperty("displayColor")]
         public ItemQuality Quality { get; protected set; }
 
+        private List<Affix> _secondaryAffixes = new List<Affix>();
+
         /// <summary>
         /// The Secondary Affixes on the Item
         /// </summary>
-        public List<Affix> SecondaryAffixes { get; set; }
+        public List<Affix> SecondaryAffixes
+        {
+            get
+            {
+                return _secondaryAffixes;
+            }
+            set
+            {
+                this._secondaryAffixes = value;
+            }
+        }
 
         /// <summary>
         /// The Slot the Item goes in
