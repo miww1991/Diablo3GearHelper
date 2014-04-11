@@ -202,8 +202,19 @@ namespace Diablo3GearHelper
                     AffixType affixType = JsonConvert.DeserializeObject<AffixType>(fakeJson);
                     Affix affix = new Affix();
                     affix.AffixType = affixType;
+
+                    affix.AffixQuality = affixLookupTable.Table.Where(a => a.Type == affixType).FirstOrDefault().Quality;
+
                     affix.Value = GetAverageValueFloat(affixesObject[affixString]);
-                    item.PrimaryAffixes.Add(affix);
+
+                    if (affix.AffixQuality == AffixQuality.Primary)
+                    {
+                        item.PrimaryAffixes.Add(affix);
+                    }
+                    else
+                    {
+                        item.SecondaryAffixes.Add(affix);
+                    }
                 }
                 catch (JsonSerializationException) { }
             }
@@ -213,15 +224,34 @@ namespace Diablo3GearHelper
 
             foreach (JToken token in prettyAffixes)
             {
-                string text = token["text"].Value<string>();
-                text = text.Replace("+", "");
+                bool enchanted = (token["affixType"].Value<string>() == "enchant");
+                if (enchanted)
+                {
+                    string text = token["text"].Value<string>();
+                    text = text.Replace("+", "");
 
-                Regex regExp = new Regex(@"\d+");
-                Match match = regExp.Match(text);
+                    Regex regExp = new Regex(@"[\d]{1,4}([.,][\d]{1,2})?");//@"\d+");
+                    Match match = regExp.Match(text);
 
-                text = text.Replace(match.ToString(), "{1}");
+                    text = text.Replace(match.ToString(), "{1}");
 
-                //affixLookupTable.Table.Wher
+                    AffixTableEntry tableEntry = affixLookupTable.Table.Where(entry => entry.DisplayString == text).FirstOrDefault();
+
+                    if (tableEntry != null)
+                    {
+                        AffixType type = tableEntry.Type;
+                        Affix enchantedAffix = item.PrimaryAffixes.Where(affix => affix.AffixType == type).FirstOrDefault();
+                        if (enchantedAffix == null)
+                        {
+                            enchantedAffix = item.SecondaryAffixes.Where(affix => affix.AffixType == type).FirstOrDefault();
+                        }
+
+                        if (enchantedAffix != null)
+                        {
+                            enchantedAffix.Enchanted = true;
+                        }
+                    }
+                }
             }
 
             switch (item.Slot)

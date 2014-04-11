@@ -38,9 +38,14 @@ namespace Diablo3GearHelper.Types
         /// </summary>
         public float Value { get; set; }
 
-        public Affix()
-        {
+        public Affix() { }
 
+        public Affix(AffixQuality quality, AffixType type, bool enchanted, float value)
+        {
+            this.AffixQuality = quality;
+            this.AffixType = type;
+            this.Enchanted = enchanted;
+            this.Value = value;
         }
     }
 }

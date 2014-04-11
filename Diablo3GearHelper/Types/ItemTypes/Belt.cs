@@ -8,8 +8,6 @@ namespace Diablo3GearHelper.Types
 {
     public class Belt : Item
     {
-        public int Armor { get; set; }
-
         public Belt() : base(ItemSlot.Belt) { }
     }
 }

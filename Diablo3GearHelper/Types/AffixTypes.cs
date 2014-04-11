@@ -72,7 +72,7 @@ namespace Diablo3GearHelper.Types
         //[EnumMember(Value = "")]
         LifePerSecond,
         [EnumMember(Value = "Health_Globe_Bonus_Health")]
-        HealthGloveAndPotionExtraLife,
+        HealthGlobeAndPotionExtraLife,
 
         // Utility
         //[EnumMember(Value = "")]
@@ -100,7 +100,7 @@ namespace Diablo3GearHelper.Types
         [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_ArcaneOrb")]
         ArcaneOrbDamage,
         [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_Disintegrate")]
-        DistintegrateDamage,
+        DisintegrateDamage,
         [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_BlackHole")]
         BlackHoleDamage,
 

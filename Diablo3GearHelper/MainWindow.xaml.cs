@@ -1,8 +1,11 @@
-﻿#define TESTING
+﻿//#define TESTING
 
 using System.Windows;
 using System.Collections.Generic;
 using Diablo3GearHelper.Types;
+using System.Diagnostics;
+using System;
+using System.Windows.Input;
 
 namespace Diablo3GearHelper
 {
@@ -73,8 +76,14 @@ namespace Diablo3GearHelper
 
         private void ImportCharacterButton_OnClick(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
             Hero hero = this.CharacterComboBox.SelectedItem as Hero;
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
             WebDataRetriever.GetDetailedHeroInformation(this.battleTag, ref hero);
+            watch.Stop();
+            TimeSpan ts = watch.Elapsed;
+            this.Cursor = Cursors.Arrow;
         }
 
         private string GetBattleTag()
