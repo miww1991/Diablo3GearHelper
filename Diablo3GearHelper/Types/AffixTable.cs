@@ -37,6 +37,7 @@ namespace Diablo3GearHelper.Types
             new AffixTableEntry("Attack Speed Increased by {1}%",                           AffixQuality.Primary,   AffixType.AttackSpeed                   ),
 
             // Defensive Stats
+            new AffixTableEntry("{1}% Life",                                                AffixQuality.Primary,   AffixType.PercentLife                   ),
             new AffixTableEntry("{1} Armor",                                                AffixQuality.Primary,   AffixType.BonusArmor                    ),
             new AffixTableEntry("Ranged and melee attackers take {1} damage per hit",       AffixQuality.Secondary, AffixType.Thorns                        ),
             new AffixTableEntry("{1} Resistance to All Elements",                           AffixQuality.Primary,   AffixType.AllResistances                ),
@@ -54,6 +55,8 @@ namespace Diablo3GearHelper.Types
             new AffixTableEntry("Lightning skills deal {1}% more damage.",                  AffixQuality.Primary,   AffixType.LightningDamage               ),
 
             // Healing Stats
+            new AffixTableEntry("{1} Life after Each Kill",                                 AffixQuality.Secondary, AffixType.LifePerKill                   ),
+            new AffixTableEntry("Regenerates {1} Life per Second",                          AffixQuality.Primary,   AffixType.LifePerSecond                 ),
             new AffixTableEntry("Health Globes and Potions Grant {1} Life.",                AffixQuality.Secondary, AffixType.HealthGlobeAndPotionExtraLife ),
 
             // Utility Stats
@@ -77,6 +80,9 @@ namespace Diablo3GearHelper.Types
 
             // Miscellaneous
             new AffixTableEntry("Level Requirement Reduced by {1}",                         AffixQuality.Secondary, AffixType.ReducedLevelRequirement       ),
+            new AffixTableEntry("Ignores Durability Loss",                                  AffixQuality.Secondary, AffixType.IgnoreDurabilityloss          ),
+            new AffixTableEntry("{1}% Damage to Demons",                                    AffixQuality.Secondary, AffixType.PercentDamageToDemons         ),
+            new AffixTableEntry("{1}% Chance to Knockback on Hit",                          AffixQuality.Secondary, AffixType.ChanceToKnockbackOnHit        ),
             new AffixTableEntry("{1}% Chance to Immobilize on Hit",                         AffixQuality.Secondary, AffixType.ChanceToImmobilizeOnHit       )
         };
 
@@ -89,7 +95,7 @@ namespace Diablo3GearHelper.Types
         }
     }
 
-    public class AffixTableEntry 
+    public class AffixTableEntry
     {
         public string DisplayString { get; private set; }
 

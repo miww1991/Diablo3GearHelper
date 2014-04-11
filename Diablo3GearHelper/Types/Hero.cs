@@ -186,5 +186,10 @@ namespace Diablo3GearHelper.Types
 
             return name;
         }
+
+        public int GetTotalPrimaryStat()
+        {
+            return this.Gear.GetTotalPrimaryStat(this.Class);
+        }
     }
 }

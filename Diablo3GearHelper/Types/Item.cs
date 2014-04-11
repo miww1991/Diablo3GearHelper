@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using System.Diagnostics;
 
 namespace Diablo3GearHelper.Types
 {
@@ -138,6 +139,42 @@ namespace Diablo3GearHelper.Types
         public Item(ItemSlot itemSlot)
         {
             this.Slot = itemSlot;
+        }
+
+        /// <summary>
+        /// Retrieves the amount of the specified class' primary stat
+        /// </summary>
+        /// <param name="classType">The type of class to retrieve the primary stat for</param>
+        /// <returns>The amount of primary stat on the item</returns>
+        public int GetPrimaryStatValue(ClassType classType)
+        {
+            int value = 0;
+
+            if (classType == ClassType.Barbarian || classType == ClassType.Crusader)
+            {
+                if (this.PrimaryAffixes.Any(affix => affix.AffixType == AffixType.Strength))
+                {
+                    value += (int)this.PrimaryAffixes.Where(affix => affix.AffixType == AffixType.Strength).FirstOrDefault().Value;
+                }
+            }
+            else if (classType == ClassType.WitchDoctor || classType == ClassType.Wizard)
+            {
+                if (this.PrimaryAffixes.Any(affix => affix.AffixType == AffixType.Intelligence))
+                {
+                    value += (int)this.PrimaryAffixes.Where(affix => affix.AffixType == AffixType.Intelligence).FirstOrDefault().Value;
+                }
+            }
+            else
+            {
+                Debug.Assert(classType == ClassType.Monk || classType == ClassType.DemonHunter);
+
+                if (this.PrimaryAffixes.Any(affix => affix.AffixType == AffixType.Dexterity))
+                {
+                    value += (int)this.PrimaryAffixes.Where(affix => affix.AffixType == AffixType.Dexterity).FirstOrDefault().Value;
+                }
+            }
+
+            return value;
         }
     }
 }

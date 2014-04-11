@@ -38,6 +38,8 @@ namespace Diablo3GearHelper
 
         private void ImportCharactersButton_OnClick(object sender, RoutedEventArgs e)
         {
+            this.Cursor = Cursors.Wait;
+
             // Convert the entered battle tag into the format needed by the D3 API
             this.battleTag = GetBattleTag();
             if (this.battleTag == null)
@@ -57,7 +59,7 @@ namespace Diablo3GearHelper
             {
                 return;
             }
-            
+
             // Add each hero to the list of characters
             List<Hero> heroes = new List<Hero>();
             foreach (Hero hero in this._heroes)
@@ -72,18 +74,26 @@ namespace Diablo3GearHelper
 
             // Enable our ComboBox now that it has items in it
             this.CharacterComboBox.IsEnabled = true;
+
+            this.Cursor = Cursors.Arrow;
         }
 
         private void ImportCharacterButton_OnClick(object sender, RoutedEventArgs e)
         {
             this.Cursor = Cursors.Wait;
             Hero hero = this.CharacterComboBox.SelectedItem as Hero;
+
             Stopwatch watch = new Stopwatch();
             watch.Start();
+
             WebDataRetriever.GetDetailedHeroInformation(this.battleTag, ref hero);
+
             watch.Stop();
             TimeSpan ts = watch.Elapsed;
+
             this.Cursor = Cursors.Arrow;
+
+            int totalIntelligence = hero.GetTotalPrimaryStat();
         }
 
         private string GetBattleTag()

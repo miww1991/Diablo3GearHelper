@@ -33,7 +33,7 @@ namespace Diablo3GearHelper.Types
         AreaDamage,
 
         // Defensive Stats
-        //[EnumMember(Value = "")]
+        [EnumMember(Value = "Hitpoints_Max_Percent_Bonus_Item")]
         PercentLife,
         [EnumMember(Value = "Armor_Bonus_Item")]
         BonusArmor,
@@ -67,9 +67,9 @@ namespace Diablo3GearHelper.Types
         // Healing
         //[EnumMember(Value = "")]
         LifeOnHit,
-        //[EnumMember(Value = "")]
+        [EnumMember(Value = "Hitpoints_On_Kill")]
         LifePerKill,
-        //[EnumMember(Value = "")]
+        [EnumMember(Value = "Hitpoints_Regen_Per_Second")]
         LifePerSecond,
         [EnumMember(Value = "Health_Globe_Bonus_Health")]
         HealthGlobeAndPotionExtraLife,
@@ -113,6 +113,12 @@ namespace Diablo3GearHelper.Types
         // Miscellaneous
         [EnumMember(Value = "Item_Level_Requirement_Reduction")]
         ReducedLevelRequirement,
+        [EnumMember(Value = "Item_Indestructible")]
+        IgnoreDurabilityloss,
+        [EnumMember(Value = "Damage_Percent_Bonus_Vs_Monster_Type#Demon")]
+        PercentDamageToDemons,
+        [EnumMember(Value = "On_Hit_Knockback_Proc_Chance")]
+        ChanceToKnockbackOnHit,
         [EnumMember(Value = "On_Hit_Immobilize_Proc_Chance")]
         ChanceToImmobilizeOnHit
     }

@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using System.Collections;
 
 namespace Diablo3GearHelper.Types
 {
-    public class Gear
+    public class Gear : IEnumerable
     {
         public Helm Helm { get; set; }
 
@@ -38,6 +39,33 @@ namespace Diablo3GearHelper.Types
         public Gear()
         {
 
+        }
+
+        public int GetTotalPrimaryStat(ClassType classType)
+        {
+            int total = 0;
+            foreach (Item item in this)
+            {
+                total += item.GetPrimaryStatValue(classType);
+            }
+            return total;
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            yield return this.Helm;
+            yield return this.Amulet;
+            yield return this.Shoulders;
+            yield return this.Gloves;
+            yield return this.Chest;
+            yield return this.Bracers;
+            yield return this.Belt;
+            yield return this.LeftRing;
+            yield return this.RightRing;
+            yield return this.Pants;
+            yield return this.Boots;
+            yield return this.MainHand;
+            yield return this.OffHand;
         }
     }
 }
