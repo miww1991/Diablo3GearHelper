@@ -85,6 +85,23 @@ namespace Diablo3GearHelper.Types
         [JsonProperty("itemLevel")]
         public int ItemLevel { get; protected set; }
 
+        private List<Gem> _gems = new List<Gem>();
+
+        /// <summary>
+        /// The Gems in the Item
+        /// </summary>
+        public List<Gem> Gems
+        {
+            get
+            {
+                return _gems;
+            }
+            set
+            {
+                this._gems = value;
+            }
+        }
+
         /// <summary>
         /// The Name of the Item
         /// </summary>
@@ -142,35 +159,26 @@ namespace Diablo3GearHelper.Types
         }
 
         /// <summary>
-        /// Retrieves the amount of the specified class' primary stat
+        /// Retrieves the amount of the specified affix on the item
         /// </summary>
-        /// <param name="classType">The type of class to retrieve the primary stat for</param>
-        /// <returns>The amount of primary stat on the item</returns>
-        public int GetPrimaryStatValue(ClassType classType)
+        /// <param name="affixType">The affix to retrieve values for</param>
+        /// <returns>The amount of the specified stat on the item</returns>
+        public float GetStatValue(AffixType affixType)
         {
             int value = 0;
 
-            if (classType == ClassType.Barbarian || classType == ClassType.Crusader)
+            // Get Primary Stat Values from Gear Stats
+            if (this.PrimaryAffixes.Any(affix => affix.AffixType == affixType))
             {
-                if (this.PrimaryAffixes.Any(affix => affix.AffixType == AffixType.Strength))
-                {
-                    value += (int)this.PrimaryAffixes.Where(affix => affix.AffixType == AffixType.Strength).FirstOrDefault().Value;
-                }
+                value += (int)this.PrimaryAffixes.Where(affix => affix.AffixType == affixType).FirstOrDefault().Value;
             }
-            else if (classType == ClassType.WitchDoctor || classType == ClassType.Wizard)
-            {
-                if (this.PrimaryAffixes.Any(affix => affix.AffixType == AffixType.Intelligence))
-                {
-                    value += (int)this.PrimaryAffixes.Where(affix => affix.AffixType == AffixType.Intelligence).FirstOrDefault().Value;
-                }
-            }
-            else
-            {
-                Debug.Assert(classType == ClassType.Monk || classType == ClassType.DemonHunter);
 
-                if (this.PrimaryAffixes.Any(affix => affix.AffixType == AffixType.Dexterity))
+            // Get Primary Stat Values from Gems
+            foreach (Gem gem in this.Gems)
+            {
+                if (gem.StatType == affixType)
                 {
-                    value += (int)this.PrimaryAffixes.Where(affix => affix.AffixType == AffixType.Dexterity).FirstOrDefault().Value;
+                    value += (int)gem.Value;
                 }
             }
 

@@ -120,6 +120,8 @@ namespace Diablo3GearHelper.Types
         [EnumMember(Value = "On_Hit_Knockback_Proc_Chance")]
         ChanceToKnockbackOnHit,
         [EnumMember(Value = "On_Hit_Immobilize_Proc_Chance")]
-        ChanceToImmobilizeOnHit
+        ChanceToImmobilizeOnHit,
+
+        InvalidAffix
     }
 }

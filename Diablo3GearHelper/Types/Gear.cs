@@ -41,12 +41,20 @@ namespace Diablo3GearHelper.Types
 
         }
 
-        public int GetTotalPrimaryStat(ClassType classType)
+        /// <summary>
+        /// Gets the total amount of the specified stat on all the gear
+        /// </summary>
+        /// <param name="affixType">The stat to get values for</param>
+        /// <returns>The total value of the specified stat on the gear set</returns>
+        public float GetStatTotal(AffixType affixType)
         {
-            int total = 0;
+            float total = 0;
             foreach (Item item in this)
             {
-                total += item.GetPrimaryStatValue(classType);
+                if (item != null)
+                {
+                    total += item.GetStatValue(affixType);
+                }
             }
             return total;
         }

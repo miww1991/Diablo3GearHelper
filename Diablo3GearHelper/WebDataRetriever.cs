@@ -286,6 +286,32 @@ namespace Diablo3GearHelper
                 }
             }
 
+            if (item.PrimaryAffixes.Any(affix => affix.AffixType == AffixType.Sockets))
+            {
+                JArray gemsObject = heroObject["gems"].Value<JArray>();
+                List<JToken> raw = gemsObject.Children().ToList();
+                foreach (JToken token in raw)
+                {
+                    string name = token["item"]["name"].Value<string>();
+
+                    JObject rawAttributes = token["attributesRaw"].Value<JObject>();
+
+                    string affixString = rawAttributes.Properties().FirstOrDefault().Name;
+
+                    string fakeJson = '"' + affixString + '"';
+
+                    try
+                    {
+                        AffixType affixType = JsonConvert.DeserializeObject<AffixType>(fakeJson);
+                        float gemValue = GetAverageValueFloat(token["attributesRaw"][affixString]);
+                        Gem newGem = new Gem(name, affixType, gemValue);
+
+                        item.Gems.Add(newGem);
+                    }
+                    catch (JsonSerializationException) { }
+                }
+            }
+
             switch (item.Slot)
             {
                 case ItemSlot.MainHand:

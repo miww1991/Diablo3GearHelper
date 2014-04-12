@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -189,7 +190,24 @@ namespace Diablo3GearHelper.Types
 
         public int GetTotalPrimaryStat()
         {
-            return this.Gear.GetTotalPrimaryStat(this.Class);
+            AffixType primaryStat = AffixType.InvalidAffix;
+
+            if (this.Class == ClassType.Barbarian || this.Class == ClassType.Crusader)
+            {
+                primaryStat = AffixType.Strength;
+            }
+            else if (this.Class == ClassType.WitchDoctor || this.Class == ClassType.Wizard)
+            {
+                primaryStat = AffixType.Intelligence;
+            }
+            else
+            {
+                Debug.Assert(this.Class == ClassType.DemonHunter || this.Class == ClassType.Monk);
+
+                primaryStat = AffixType.Dexterity;
+            }
+
+            return (int)this.Gear.GetStatTotal(primaryStat);
         }
     }
 }

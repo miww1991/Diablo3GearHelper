@@ -92,8 +92,6 @@ namespace Diablo3GearHelper
             TimeSpan ts = watch.Elapsed;
 
             this.Cursor = Cursors.Arrow;
-
-            int totalIntelligence = hero.GetTotalPrimaryStat();
         }
 
         private string GetBattleTag()
