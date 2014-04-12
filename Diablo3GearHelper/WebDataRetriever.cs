@@ -193,9 +193,21 @@ namespace Diablo3GearHelper
             JsonConvert.PopulateObject(responseString, item);
 
             List<JToken> RawAffixes = affixesObject.Children().ToList();
+            float damageDelta = 0;
+            float damageMin = 0;
             foreach (JToken affixToken in RawAffixes)
             {
                 string affixString = affixesObject.Properties().ToList()[RawAffixes.IndexOf(affixToken)].Name;
+
+                if (affixString.Contains("Damage_Min") || affixString.Contains("Damage_Weapon_Bonus_Min_X1"))
+                {
+                    damageMin = GetAverageValueFloat(affixesObject[affixString]);
+                }
+                else if (affixString.Contains("Damage_Delta") || affixString.Contains("Damage_Weapon_Bonus_Delta_X1"))
+                {
+                    damageDelta = GetAverageValueFloat(affixesObject[affixString]);
+                }
+
                 string fakeJson = '"' + affixString + '"';
                 try
                 {
@@ -219,6 +231,13 @@ namespace Diablo3GearHelper
                 catch (JsonSerializationException) { }
             }
 
+            if (damageDelta > 0 && damageMin > 0)
+            {
+                float averageDamage = damageMin + (damageDelta / 2);
+                Affix avgDmg = new Affix(AffixQuality.Primary, AffixType.AverageDamage, false, averageDamage);
+                item.PrimaryAffixes.Add(avgDmg);
+            }
+
             List<JToken> prettyAffixes = parsedAttributesObject["primary"].Children().ToList();
             prettyAffixes.AddRange(parsedAttributesObject["secondary"].Children());
 
@@ -231,24 +250,37 @@ namespace Diablo3GearHelper
                     text = text.Replace("+", "");
 
                     Regex regExp = new Regex(@"[\d]{1,4}([.,][\d]{1,2})?");//@"\d+");
-                    Match match = regExp.Match(text);
+                    Match match = regExp.Match(text); // 70–132 Damage (\d+)-(\d+)
 
-                    text = text.Replace(match.ToString(), "{1}");
+                    Regex regEx = new Regex(@"(\d+)–(\d+)\s?.* Damage");
 
-                    AffixTableEntry tableEntry = affixLookupTable.Table.Where(entry => entry.DisplayString == text).FirstOrDefault();
-
-                    if (tableEntry != null)
+                    if (regEx.IsMatch(text))
                     {
-                        AffixType type = tableEntry.Type;
-                        Affix enchantedAffix = item.PrimaryAffixes.Where(affix => affix.AffixType == type).FirstOrDefault();
-                        if (enchantedAffix == null)
-                        {
-                            enchantedAffix = item.SecondaryAffixes.Where(affix => affix.AffixType == type).FirstOrDefault();
-                        }
-
+                        Affix enchantedAffix = item.PrimaryAffixes.Where(affix => affix.AffixType == AffixType.AverageDamage).FirstOrDefault();
                         if (enchantedAffix != null)
                         {
                             enchantedAffix.Enchanted = true;
+                        }
+                    }
+                    else
+                    {
+                        text = text.Replace(match.ToString(), "{1}");
+
+                        AffixTableEntry tableEntry = affixLookupTable.Table.Where(entry => entry.DisplayString == text).FirstOrDefault();
+
+                        if (tableEntry != null)
+                        {
+                            AffixType type = tableEntry.Type;
+                            Affix enchantedAffix = item.PrimaryAffixes.Where(affix => affix.AffixType == type).FirstOrDefault();
+                            if (enchantedAffix == null)
+                            {
+                                enchantedAffix = item.SecondaryAffixes.Where(affix => affix.AffixType == type).FirstOrDefault();
+                            }
+
+                            if (enchantedAffix != null)
+                            {
+                                enchantedAffix.Enchanted = true;
+                            }
                         }
                     }
                 }
