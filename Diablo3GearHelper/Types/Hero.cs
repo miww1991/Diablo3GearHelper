@@ -62,6 +62,17 @@ namespace Diablo3GearHelper.Types
         public string[] ActiveSkills { get; set; }
 
         /// <summary>
+        /// The Hero's Total Attacks Per Second
+        /// </summary>
+        public float AttacksPerSecond
+        {
+            get
+            {
+                return this.Gear.MainHand.AttacksPerSecond * (1 + this.GetTotalStat(AffixType.AttackSpeed));
+            }
+        }
+
+        /// <summary>
         /// The Hero's Class
         /// </summary>
         [JsonProperty("class")]
@@ -94,6 +105,24 @@ namespace Diablo3GearHelper.Types
             get
             {
                 return this.GetTotalStat(AffixType.CriticalHitDamage) + 0.5f;
+            }
+        }
+
+        /// <summary>
+        /// The Hero's Damage
+        /// </summary>
+        public int Damage
+        {
+            get
+            {
+                return CalculateHeroDamage
+                    (
+                    this.PrimaryStat, 
+                    this.CriticalHitChance, 
+                    this.CriticalHitDamage, 
+                    this.AttacksPerSecond, 
+                    this.GetTotalStat(AffixType.AverageDamage)
+                    );
             }
         }
 
@@ -251,9 +280,18 @@ namespace Diablo3GearHelper.Types
                 primaryStat = AffixType.Dexterity;
             }
 
-            return (int)this.GetTotalStat(primaryStat);
+            int value = (int)this.GetTotalStat(primaryStat);
+            value += 10; // Base Primary Stat
+            value += (this.Level * 3); // Points per level
+
+            return value;
         }
 
+        /// <summary>
+        /// Retrieves the total amount of the specified stat on all the gear
+        /// </summary>
+        /// <param name="statToGet">The stat to total</param>
+        /// <returns>The total amount of the stat on all the gear</returns>
         public float GetTotalStat(AffixType statToGet)
         {
             float value = this.Gear.GetStatTotal(statToGet);
@@ -264,6 +302,94 @@ namespace Diablo3GearHelper.Types
             }
 
             return value;
+        }
+
+        public float CalculateStatWeight(AffixType statToCalculate)
+        {
+            int newDamage = 0;
+            float weight = 0;
+
+            switch (statToCalculate)
+            {
+                // Intentional fall through since all are primary stats
+                case AffixType.Intelligence:
+                case AffixType.Strength:
+                case AffixType.Dexterity:
+                    newDamage = CalculateHeroDamage
+                                    (
+                                    this.PrimaryStat + 1, 
+                                    this.CriticalHitChance, 
+                                    this.CriticalHitDamage, 
+                                    this.AttacksPerSecond, 
+                                    this.GetTotalStat(AffixType.AverageDamage)
+                                    );
+                    weight = newDamage - this.Damage;
+
+                    break;
+
+                case AffixType.CriticalHitChance:
+                    newDamage = CalculateHeroDamage
+                                    (
+                                    this.PrimaryStat, 
+                                    this.CriticalHitChance + 0.01f, 
+                                    this.CriticalHitDamage, 
+                                    this.AttacksPerSecond, 
+                                    this.GetTotalStat(AffixType.AverageDamage)
+                                    );
+                    weight = newDamage - this.Damage;
+
+                    break;
+
+                case AffixType.CriticalHitDamage:
+                    newDamage = CalculateHeroDamage
+                                    (
+                                    this.PrimaryStat,
+                                    this.CriticalHitChance,
+                                    this.CriticalHitDamage + 0.01f,
+                                    this.AttacksPerSecond,
+                                    this.GetTotalStat(AffixType.AverageDamage)
+                                    );
+                    weight = newDamage - this.Damage;
+
+                    break;
+
+                case AffixType.AttackSpeed:
+                    newDamage = CalculateHeroDamage
+                                    (
+                                    this.PrimaryStat,
+                                    this.CriticalHitChance,
+                                    this.CriticalHitDamage,
+                                    this.Gear.MainHand.AttacksPerSecond * (1.01f + this.GetTotalStat(AffixType.AttackSpeed)), // 1.0f base attack speed + 1% attack speed = 1.01
+                                    this.GetTotalStat(AffixType.AverageDamage)
+                                    );
+                    weight = newDamage - this.Damage;
+
+                    break;
+                default:
+                    throw new NotImplementedException();
+            }
+
+            return weight;
+        }
+
+        /// <summary>
+        /// Calculates the Hero's Damage
+        /// </summary>
+        /// <param name="primaryStat">The total amount of primary stat the Hero has</param>
+        /// <param name="critChance">The total amount of critical hit chance the Hero has</param>
+        /// <param name="critDamage">The total amount of critical hit damage the Hero has</param>
+        /// <param name="APS">The amount of attacks per second the Hero does</param>
+        /// <param name="averageDamage">The total amount of average damage the Hero has</param>
+        /// <returns>The Hero's Damage</returns>
+        private int CalculateHeroDamage(int primaryStat, float critChance, float critDamage, float APS, float averageDamage)
+        {
+            // SCRAM - http://www.almostgaming.com/diablo3/diablo-3-how-is-damage-calculated/
+            float damage = (primaryStat * 0.01f) + 1.0f; // S - Main Stat
+            damage *= (critChance * critDamage) + 1.0f; // C - Critical Stats
+            damage *= APS; // R - Attacks Per Second
+            damage *= averageDamage; // A - Average Damage
+
+            return (int)Math.Round(damage);
         }
     }
 }

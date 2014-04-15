@@ -23,6 +23,9 @@
         <TextBox Name="BTagNameTextBox"
                  Width="120"
                  Canvas.Left="68" Canvas.Top="20"/>
+        <TextBlock Name="StatWeightText" Text=""
+                   Height="22"
+                   Canvas.Left="10" Canvas.Top="100"/>
         <ComboBox Name="CharacterComboBox"  Canvas.Left="105" Canvas.Top="65" Width="120" IsEnabled="False"/>
     </Canvas>
 </Window>

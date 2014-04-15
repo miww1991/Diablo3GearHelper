@@ -93,14 +93,20 @@ namespace Diablo3GearHelper
 
             this.Cursor = Cursors.Arrow;
 
-            float attacksPerSecond = hero.Gear.MainHand.AttacksPerSecond * (1 + hero.GetTotalStat(AffixType.AttackSpeed));
+            float intWeight = hero.CalculateStatWeight(AffixType.Intelligence);
+            float critChanceWeight = hero.CalculateStatWeight(AffixType.CriticalHitChance);
+            float critDamageWeight = hero.CalculateStatWeight(AffixType.CriticalHitDamage);
+            float attackSpeedWeight = hero.CalculateStatWeight(AffixType.AttackSpeed);
 
-            // SCRAM - http://www.almostgaming.com/diablo3/diablo-3-how-is-damage-calculated/
-            float DPS = (hero.PrimaryStat * 0.01f) + 1.0f; // S - Main Stat
-            DPS *= (hero.CriticalHitChance * hero.CriticalHitDamage) + 1.0f; // C - Critical Stats
-            DPS *= attacksPerSecond; // R - Attacks Per Second
-            DPS *= hero.GetTotalStat(AffixType.AverageDamage); // A - Average Damage
-            long roundedDPS = (long)Math.Round(DPS);
+            float critToIntRatio = (intWeight / critChanceWeight) * 100;
+            float critDmgToIntRatio = (intWeight / critDamageWeight) * 100;
+            float apsToIntRatio = (intWeight / attackSpeedWeight) * 100;
+
+            string critString = critToIntRatio.ToString("N2");
+            string critDmgString = critDmgToIntRatio.ToString("N2");
+            string apsString = apsToIntRatio.ToString("N2");
+
+            this.StatWeightText.Text = "1 Intelligence = " + critString + " % Critical Chance = " + critDmgString + " % Critical Damage = " + apsString + " % Attack Speed";
         }
 
         private string GetBattleTag()
