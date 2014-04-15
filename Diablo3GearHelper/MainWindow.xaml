@@ -6,12 +6,12 @@
     <Canvas>
         <Button Name="ImportCharacterButton" Click="ImportCharacterButton_OnClick"
                 Width="110" Height="25"
-                Canvas.Left="230" Canvas.Top="63">
+                Canvas.Left="230" Canvas.Top="62">
             <TextBlock>Import Character</TextBlock>
         </Button>
         <Button Name="ImportCharactersButton" Click="ImportCharactersButton_OnClick"
                 Width="200" Height="25"
-                Canvas.Left="195" Canvas.Top="17">
+                Canvas.Left="193" Canvas.Top="17">
             <TextBlock>Import Characters from Battle.net</TextBlock>
         </Button>
         <TextBlock Text="BattleTag:"
@@ -23,8 +23,8 @@
         <TextBox Name="BTagNameTextBox"
                  Width="120"
                  Canvas.Left="68" Canvas.Top="20"/>
-        <TextBlock Name="StatWeightText" Text=""
-                   Height="22"
+        <TextBlock Name="StatWeightText" Text="" FontSize="10"
+                   Height="22" Width="350"
                    Canvas.Left="10" Canvas.Top="100"/>
         <ComboBox Name="CharacterComboBox"  Canvas.Left="105" Canvas.Top="65" Width="120" IsEnabled="False"/>
     </Canvas>

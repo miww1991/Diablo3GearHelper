@@ -117,10 +117,10 @@ namespace Diablo3GearHelper.Types
             {
                 return CalculateHeroDamage
                     (
-                    this.PrimaryStat, 
-                    this.CriticalHitChance, 
-                    this.CriticalHitDamage, 
-                    this.AttacksPerSecond, 
+                    this.PrimaryStat,
+                    this.CriticalHitChance,
+                    this.CriticalHitDamage,
+                    this.AttacksPerSecond,
                     this.GetTotalStat(AffixType.AverageDamage)
                     );
             }
@@ -225,6 +225,30 @@ namespace Diablo3GearHelper.Types
         }
 
         /// <summary>
+        /// The Hero's Primary Stat Type
+        /// </summary>
+        public AffixType PrimaryStatType
+        {
+            get
+            {
+                if (this.Class == ClassType.Barbarian || this.Class == ClassType.Crusader)
+                {
+                    return AffixType.Strength;
+                }
+                else if (this.Class == ClassType.WitchDoctor || this.Class == ClassType.Wizard)
+                {
+                    return AffixType.Intelligence;
+                }
+                else
+                {
+                    Debug.Assert(this.Class == ClassType.DemonHunter || this.Class == ClassType.Monk);
+
+                    return AffixType.Dexterity;
+                }
+            }
+        }
+
+        /// <summary>
         /// The runes for the hero's skills. These must match up with the Skills indexes.
         /// Note: This will later be updated to be something other than strings
         /// </summary>
@@ -263,24 +287,7 @@ namespace Diablo3GearHelper.Types
 
         public int GetTotalPrimaryStat()
         {
-            AffixType primaryStat = AffixType.InvalidAffix;
-
-            if (this.Class == ClassType.Barbarian || this.Class == ClassType.Crusader)
-            {
-                primaryStat = AffixType.Strength;
-            }
-            else if (this.Class == ClassType.WitchDoctor || this.Class == ClassType.Wizard)
-            {
-                primaryStat = AffixType.Intelligence;
-            }
-            else
-            {
-                Debug.Assert(this.Class == ClassType.DemonHunter || this.Class == ClassType.Monk);
-
-                primaryStat = AffixType.Dexterity;
-            }
-
-            int value = (int)this.GetTotalStat(primaryStat);
+            int value = (int)this.GetTotalStat(this.PrimaryStatType);
             value += 10; // Base Primary Stat
             value += (this.Level * 3); // Points per level
 
@@ -317,10 +324,10 @@ namespace Diablo3GearHelper.Types
                 case AffixType.Dexterity:
                     newDamage = CalculateHeroDamage
                                     (
-                                    this.PrimaryStat + 1, 
-                                    this.CriticalHitChance, 
-                                    this.CriticalHitDamage, 
-                                    this.AttacksPerSecond, 
+                                    this.PrimaryStat + 1,
+                                    this.CriticalHitChance,
+                                    this.CriticalHitDamage,
+                                    this.AttacksPerSecond,
                                     this.GetTotalStat(AffixType.AverageDamage)
                                     );
                     weight = newDamage - this.Damage;
@@ -330,10 +337,10 @@ namespace Diablo3GearHelper.Types
                 case AffixType.CriticalHitChance:
                     newDamage = CalculateHeroDamage
                                     (
-                                    this.PrimaryStat, 
-                                    this.CriticalHitChance + 0.01f, 
-                                    this.CriticalHitDamage, 
-                                    this.AttacksPerSecond, 
+                                    this.PrimaryStat,
+                                    this.CriticalHitChance + 0.01f,
+                                    this.CriticalHitDamage,
+                                    this.AttacksPerSecond,
                                     this.GetTotalStat(AffixType.AverageDamage)
                                     );
                     weight = newDamage - this.Damage;

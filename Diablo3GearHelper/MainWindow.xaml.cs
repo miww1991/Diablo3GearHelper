@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Diablo3GearHelper.Types;
 using System.Diagnostics;
 using System;
+using System.Linq;
 using System.Windows.Input;
 
 namespace Diablo3GearHelper
@@ -98,15 +99,24 @@ namespace Diablo3GearHelper
             float critDamageWeight = hero.CalculateStatWeight(AffixType.CriticalHitDamage);
             float attackSpeedWeight = hero.CalculateStatWeight(AffixType.AttackSpeed);
 
-            float critToIntRatio = (intWeight / critChanceWeight) * 100;
-            float critDmgToIntRatio = (intWeight / critDamageWeight) * 100;
-            float apsToIntRatio = (intWeight / attackSpeedWeight) * 100;
+            float[] weights = new float[4];
+            weights[0] = intWeight;
+            weights[1] = critChanceWeight;
+            weights[2] = critDamageWeight;
+            weights[3] = attackSpeedWeight;
 
-            string critString = critToIntRatio.ToString("N2");
-            string critDmgString = critDmgToIntRatio.ToString("N2");
-            string apsString = apsToIntRatio.ToString("N2");
+            float max = weights.Max();
 
-            this.StatWeightText.Text = "1 Intelligence = " + critString + " % Critical Chance = " + critDmgString + " % Critical Damage = " + apsString + " % Attack Speed";
+            float[] rounded = new float[4];
+            for (int i = 0; i < weights.Length; i++)
+            {
+                weights[i] = max / weights[i];
+                rounded[i] = (float)Math.Round(weights[i], 1);
+            }
+
+            string text = rounded[0].ToString() + " " + hero.PrimaryStatType.ToString() + " = " + rounded[1].ToString();
+            text += "% Critical Chance = " + rounded[2].ToString() + "% Critical Damage = " + rounded[3].ToString() + "% Attack Speed";
+            this.StatWeightText.Text = text;
         }
 
         private string GetBattleTag()
