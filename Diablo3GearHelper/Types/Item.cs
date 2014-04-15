@@ -85,11 +85,12 @@ namespace Diablo3GearHelper.Types
         [JsonProperty("itemLevel")]
         public int ItemLevel { get; protected set; }
 
-        private List<Gem> _gems = new List<Gem>();
+        private List<Gem> _gems = new List<Gem>(0);
 
         /// <summary>
         /// The Gems in the Item
         /// </summary>
+        [JsonProperty("ignoreMe")]
         public List<Gem> Gems
         {
             get
@@ -108,7 +109,7 @@ namespace Diablo3GearHelper.Types
         [JsonProperty("name")]
         public string Name { get; protected set; }
 
-        private List<Affix> _primaryAffixes = new List<Affix>();
+        private List<Affix> _primaryAffixes = new List<Affix>(0);
 
         /// <summary>
         /// The Primary Affixes on the Item
@@ -131,7 +132,7 @@ namespace Diablo3GearHelper.Types
         [JsonProperty("displayColor")]
         public ItemQuality Quality { get; protected set; }
 
-        private List<Affix> _secondaryAffixes = new List<Affix>();
+        private List<Affix> _secondaryAffixes = new List<Affix>(0);
 
         /// <summary>
         /// The Secondary Affixes on the Item
@@ -165,12 +166,16 @@ namespace Diablo3GearHelper.Types
         /// <returns>The amount of the specified stat on the item</returns>
         public float GetStatValue(AffixType affixType)
         {
-            int value = 0;
+            float value = 0;
 
             // Get Primary Stat Values from Gear Stats
             if (this.PrimaryAffixes.Any(affix => affix.AffixType == affixType))
             {
-                value += (int)this.PrimaryAffixes.Where(affix => affix.AffixType == affixType).FirstOrDefault().Value;
+                value += this.PrimaryAffixes.Where(affix => affix.AffixType == affixType).FirstOrDefault().Value;
+            }
+            else if (this.SecondaryAffixes.Any(affix => affix.AffixType == affixType))
+            {
+                value += this.SecondaryAffixes.Where(affix => affix.AffixType == affixType).FirstOrDefault().Value;
             }
 
             // Get Primary Stat Values from Gems
@@ -178,7 +183,7 @@ namespace Diablo3GearHelper.Types
             {
                 if (gem.StatType == affixType)
                 {
-                    value += (int)gem.Value;
+                    value += gem.Value;
                 }
             }
 

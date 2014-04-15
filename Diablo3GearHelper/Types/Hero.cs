@@ -75,6 +75,28 @@ namespace Diablo3GearHelper.Types
             get { return _classStrings[(int) this.Class]; }
         }
 
+        /// <summary>
+        /// The Hero's Critical Hit Chance
+        /// </summary>
+        public float CriticalHitChance
+        {
+            get
+            {
+                return (this.GetTotalStat(AffixType.CriticalHitChance) * 100) + 5.0f;
+            }
+        }
+
+        /// <summary>
+        /// The Hero's Critical Hit Damage
+        /// </summary>
+        public int CriticalHitDamage
+        {
+            get
+            {
+                return (int)(this.GetTotalStat(AffixType.CriticalHitDamage) * 100) + 50;
+            }
+        }
+
         private Gear _gear = new Gear();
 
         /// <summary>
@@ -97,6 +119,17 @@ namespace Diablo3GearHelper.Types
         /// </summary>
         //[JsonProperty("gender")]
         public HeroGender Gender { get; private set; }
+
+        /// <summary>
+        /// The Hero's Health
+        /// </summary>
+        public int Health
+        {
+            get
+            {
+                return (int)Math.Round(((this.GetTotalStat(AffixType.Vitality) * 80) + 316) * (1 + this.GetTotalStat(AffixType.PercentLife)));
+            }
+        }
 
         /// <summary>
         /// The Id of the Hero
@@ -150,6 +183,17 @@ namespace Diablo3GearHelper.Types
         /// Note: This will later be updated to be something other than strings
         /// </summary>
         public string[] PassiveSkills { get; set; }
+
+        /// <summary>
+        /// The Hero's Primary Stat
+        /// </summary>
+        public int PrimaryStat
+        {
+            get
+            {
+                return this.GetTotalPrimaryStat();
+            }
+        }
 
         /// <summary>
         /// The runes for the hero's skills. These must match up with the Skills indexes.
@@ -207,7 +251,19 @@ namespace Diablo3GearHelper.Types
                 primaryStat = AffixType.Dexterity;
             }
 
-            return (int)this.Gear.GetStatTotal(primaryStat);
+            return (int)this.GetTotalStat(primaryStat);
+        }
+
+        public float GetTotalStat(AffixType statToGet)
+        {
+            float value = this.Gear.GetStatTotal(statToGet);
+
+            if (statToGet == AffixType.Vitality)
+            {
+                value += (this.Level * 2) + 7;
+            }
+
+            return value;
         }
     }
 }

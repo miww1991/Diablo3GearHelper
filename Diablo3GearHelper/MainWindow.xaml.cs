@@ -92,6 +92,8 @@ namespace Diablo3GearHelper
             TimeSpan ts = watch.Elapsed;
 
             this.Cursor = Cursors.Arrow;
+
+            float attacksPerSecond = hero.Gear.MainHand.AttacksPerSecond * (1 + hero.GetTotalStat(AffixType.AttackSpeed));
         }
 
         private string GetBattleTag()
