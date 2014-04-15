@@ -1,4 +1,4 @@
-﻿//#define TESTING
+﻿#define TESTING
 
 using System.Windows;
 using System.Collections.Generic;
@@ -94,6 +94,13 @@ namespace Diablo3GearHelper
             this.Cursor = Cursors.Arrow;
 
             float attacksPerSecond = hero.Gear.MainHand.AttacksPerSecond * (1 + hero.GetTotalStat(AffixType.AttackSpeed));
+
+            // SCRAM - http://www.almostgaming.com/diablo3/diablo-3-how-is-damage-calculated/
+            float DPS = (hero.PrimaryStat * 0.01f) + 1.0f; // S - Main Stat
+            DPS *= (hero.CriticalHitChance * hero.CriticalHitDamage) + 1.0f; // C - Critical Stats
+            DPS *= attacksPerSecond; // R - Attacks Per Second
+            DPS *= hero.GetTotalStat(AffixType.AverageDamage); // A - Average Damage
+            long roundedDPS = (long)Math.Round(DPS);
         }
 
         private string GetBattleTag()

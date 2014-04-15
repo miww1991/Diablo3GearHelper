@@ -51,7 +51,11 @@ namespace Diablo3GearHelper.Types
             float total = 0;
             foreach (Item item in this)
             {
-                if (item != null)
+                if (item.GetType() == typeof(Weapon) && affixType == AffixType.AverageDamage)
+                {
+                    total += (item as Weapon).AverageDamage;
+                }
+                else if (item != null)
                 {
                     total += item.GetStatValue(affixType);
                 }

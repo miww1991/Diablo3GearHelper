@@ -104,6 +104,7 @@ namespace Diablo3GearHelper
                 hero.Runes[i] = (activeSkills[i])["rune"]["name"].Value<string>();
             }
 
+            List<Task> tasks = new List<Task>();
             foreach (JToken item in values)
             {
                 string type = itemsObj.Properties().ToList()[values.IndexOf(item)].Name;
@@ -171,8 +172,12 @@ namespace Diablo3GearHelper
 
                 string tooltipParams = item.Value<string>("tooltipParams");
                 string url = "http://us.battle.net/api/d3/data/" + tooltipParams;
-                GetItemInfo(url, ref newItem);
+                Action action = () => GetItemInfo(url, ref newItem);
+                Task worker = Task.Factory.StartNew(action);
+                tasks.Add(worker);
+                //GetItemInfo(url, ref newItem);
             }
+            Task.WaitAll(tasks.ToArray());
         }
 
         private static void GetItemInfo(string url, ref Item item)

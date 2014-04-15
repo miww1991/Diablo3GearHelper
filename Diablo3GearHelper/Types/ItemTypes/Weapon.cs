@@ -21,8 +21,16 @@ namespace Diablo3GearHelper.Types
             }
         }
 
+        public float AverageDamage
+        {
+            get
+            {
+                return (MinDamage + MaxDamage) / 2;
+            }
+        }
+
         [JsonProperty("ignoreMe3")]
-        public int MinDamage;
+        public int MinDamage { get; set; }
 
         [JsonProperty("ignoreMe4")]
         public int MaxDamage { get; set; }

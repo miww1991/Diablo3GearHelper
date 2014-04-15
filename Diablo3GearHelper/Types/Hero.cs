@@ -82,18 +82,18 @@ namespace Diablo3GearHelper.Types
         {
             get
             {
-                return (this.GetTotalStat(AffixType.CriticalHitChance) * 100) + 5.0f;
+                return this.GetTotalStat(AffixType.CriticalHitChance) + 0.05f;
             }
         }
 
         /// <summary>
         /// The Hero's Critical Hit Damage
         /// </summary>
-        public int CriticalHitDamage
+        public float CriticalHitDamage
         {
             get
             {
-                return (int)(this.GetTotalStat(AffixType.CriticalHitDamage) * 100) + 50;
+                return this.GetTotalStat(AffixType.CriticalHitDamage) + 0.5f;
             }
         }
 
