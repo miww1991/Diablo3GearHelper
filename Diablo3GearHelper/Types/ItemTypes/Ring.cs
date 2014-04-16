@@ -9,5 +9,10 @@ namespace Diablo3GearHelper.Types
     public class Ring : Item
     {
         public Ring(ItemSlot slot) : base(slot) { }
+
+        public override string ToString()
+        {
+            return "Ring: " + this.Name;
+        }
     }
 }

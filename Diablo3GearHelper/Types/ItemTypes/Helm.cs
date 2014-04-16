@@ -8,6 +8,13 @@ namespace Diablo3GearHelper.Types
 {
     public class Helm : Item
     {
+        public int BaseArmor { get; protected set; }
+
         public Helm() : base(ItemSlot.Helm) { }
+
+        public override string ToString()
+        {
+            return "Helm: " + this.Name;
+        }
     }
 }

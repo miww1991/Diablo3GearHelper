@@ -8,6 +8,13 @@ namespace Diablo3GearHelper.Types
 {
     public class Chest : Item
     {
+        public int BaseArmor { get; protected set; }
+
         public Chest() : base(ItemSlot.Chest) { }
+
+        public override string ToString()
+        {
+            return "Chest: " + this.Name;
+        }
     }
 }

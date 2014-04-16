@@ -11,5 +11,10 @@ namespace Diablo3GearHelper.Types
         public int BaseArmor { get; protected set; }
 
         public Boots() : base(ItemSlot.Boots) { }
+
+        public override string ToString()
+        {
+            return "Boots: " + this.Name;
+        }
     }
 }

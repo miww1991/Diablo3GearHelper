@@ -175,7 +175,6 @@ namespace Diablo3GearHelper
                 Action action = () => GetItemInfo(url, ref newItem);
                 Task worker = Task.Factory.StartNew(action);
                 tasks.Add(worker);
-                //GetItemInfo(url, ref newItem);
             }
             Task.WaitAll(tasks.ToArray());
         }

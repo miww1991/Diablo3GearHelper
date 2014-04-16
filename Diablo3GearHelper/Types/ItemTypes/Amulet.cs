@@ -9,5 +9,10 @@ namespace Diablo3GearHelper.Types
     public class Amulet : Item
     {
         public Amulet() : base(ItemSlot.Amulet) { }
+
+        public override string ToString()
+        {
+            return "Amulet: " + this.Name;
+        }
     }
 }

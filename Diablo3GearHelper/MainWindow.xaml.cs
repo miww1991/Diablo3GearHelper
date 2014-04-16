@@ -117,6 +117,12 @@ namespace Diablo3GearHelper
             string text = rounded[0].ToString() + " " + hero.PrimaryStatType.ToString() + " = " + rounded[1].ToString();
             text += "% Critical Chance = " + rounded[2].ToString() + "% Critical Damage = " + rounded[3].ToString() + "% Attack Speed";
             this.StatWeightText.Text = text;
+
+            foreach (Item item in hero.Gear)
+            {
+                ItemComboBox.Items.Add(item);
+            }
+            ItemComboBox.IsEnabled = true;
         }
 
         private string GetBattleTag()
