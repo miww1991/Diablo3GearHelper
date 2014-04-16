@@ -125,6 +125,11 @@ namespace Diablo3GearHelper
             ItemComboBox.IsEnabled = true;
         }
 
+        private void DPSEnchantButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            Item item = this.ItemComboBox.SelectedItem as Item;
+        }
+
         private string GetBattleTag()
         {
             string[] tokens = this.BTagNameTextBox.Text.Split(new char[] { '#', '-' });

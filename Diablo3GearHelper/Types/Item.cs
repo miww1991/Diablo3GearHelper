@@ -56,6 +56,8 @@ namespace Diablo3GearHelper.Types
         RightRing,
         [EnumMember(Value = "neck")]
         Amulet,
+        [EnumMember(Value = "ignoreMe")]
+        Ring, // General Ring Slot
 
         ItemSlotCount
     }

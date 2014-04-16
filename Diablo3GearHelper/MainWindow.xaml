@@ -28,5 +28,10 @@
                    Canvas.Left="10" Canvas.Top="100"/>
         <ComboBox Name="CharacterComboBox"  Canvas.Left="105" Canvas.Top="65" Width="173" IsEnabled="False"/>
         <ComboBox Name="ItemComboBox"  Canvas.Left="10" Canvas.Top="137" Width="120" IsEnabled="False"/>
+        <Button x:Name="DPSEnchantButton" Click="DPSEnchantButton_OnClick"
+            Width="143" Height="25"
+            Canvas.Left="135" Canvas.Top="134">
+            <TextBlock>Choose Best DPS Enchant</TextBlock>
+        </Button>
     </Canvas>
 </Window>

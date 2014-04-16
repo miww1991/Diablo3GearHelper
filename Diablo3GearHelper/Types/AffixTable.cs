@@ -45,12 +45,17 @@ namespace Diablo3GearHelper.Types
             new AffixTableEntry("{1} Lightning Resistance",                                 AffixQuality.Secondary, AffixType.LightningResistance           ),
             new AffixTableEntry("{1} Arcane Resistance",                                    AffixQuality.Secondary, AffixType.ArcaneResistance              ),
             new AffixTableEntry("{1} Poison Resistance",                                    AffixQuality.Secondary, AffixType.PoisonResistance              ),
+            new AffixTableEntry("{1} Holy Resistance",                                      AffixQuality.Secondary, AffixType.HolyResistance                ),
+            new AffixTableEntry("{1} Physical Resistance",                                  AffixQuality.Secondary, AffixType.PhysicalResistance            ),
 
             // Elemental Damage Stats
             new AffixTableEntry("Arcane skills deal {1}% more damage.",                     AffixQuality.Primary,   AffixType.ArcaneDamage                  ),
             new AffixTableEntry("Fire skills deal {1}% more damage.",                       AffixQuality.Primary,   AffixType.FireDamage                    ),
             new AffixTableEntry("Cold skills deal {1}% more damage.",                       AffixQuality.Primary,   AffixType.ColdDamage                    ),
             new AffixTableEntry("Lightning skills deal {1}% more damage.",                  AffixQuality.Primary,   AffixType.LightningDamage               ),
+            new AffixTableEntry("Holy skills deal {1}% more damage.",                       AffixQuality.Primary,   AffixType.HolyDamage                    ),
+            new AffixTableEntry("Physical skills deal {1}% more damage.",                   AffixQuality.Primary,   AffixType.PhysicalDamage                ),
+            new AffixTableEntry("Poison skills deal {1}% more damage.",                     AffixQuality.Primary,   AffixType.PoisonDamage                  ),
 
             // Sockets
             new AffixTableEntry("Need to Put Something Here",                               AffixQuality.Primary,   AffixType.Sockets                       ),

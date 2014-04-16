@@ -47,6 +47,10 @@ namespace Diablo3GearHelper.Types
         ArcaneResistance,
         [EnumMember(Value = "Resistance#Poison")]
         PoisonResistance,
+        [EnumMember(Value = "Resistance#Holy")]
+        HolyResistance,
+        [EnumMember(Value = "Resistance#Physical")]
+        PhysicalResistance,
 
         // Elemental Damage
         [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Arcane")]
@@ -57,6 +61,12 @@ namespace Diablo3GearHelper.Types
         ColdDamage,
         [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Lightning")]
         LightningDamage,
+        [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Holy")]
+        HolyDamage,
+        [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Poison")]
+        PoisonDamage,
+        [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Physical")]
+        PhysicalDamage,
 
         // Sockets
         [EnumMember(Value = "Sockets")]
