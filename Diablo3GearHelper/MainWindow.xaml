@@ -4,7 +4,7 @@
         xmlns:System="clr-namespace:System;assembly=mscorlib" x:Class="Diablo3GearHelper.MainWindow"
         Title="Diablo 3 Gear Helper" Height="300" Width="420" Loaded="Window_Loaded">
     <Canvas>
-        <Button Name="ImportCharacterButton" Click="ImportCharacterButton_OnClick"
+        <Button Name="ImportCharacterButton" Click="ImportCharacterButton_OnClick" IsEnabled="False"
                 Width="110" Height="25"
                 Canvas.Left="283" Canvas.Top="62">
             <TextBlock>Import Character</TextBlock>
@@ -28,7 +28,7 @@
                    Canvas.Left="10" Canvas.Top="100"/>
         <ComboBox Name="CharacterComboBox"  Canvas.Left="105" Canvas.Top="65" Width="173" IsEnabled="False"/>
         <ComboBox Name="ItemComboBox"  Canvas.Left="10" Canvas.Top="137" Width="120" IsEnabled="False"/>
-        <Button x:Name="DPSEnchantButton" Click="DPSEnchantButton_OnClick"
+        <Button x:Name="DPSEnchantButton" Click="DPSEnchantButton_OnClick" IsEnabled="False"
             Width="143" Height="25"
             Canvas.Left="135" Canvas.Top="134">
             <TextBlock>Choose Best DPS Enchant</TextBlock>

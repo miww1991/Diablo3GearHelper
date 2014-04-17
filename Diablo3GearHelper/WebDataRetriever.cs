@@ -19,6 +19,7 @@ namespace Diablo3GearHelper
     public class WebDataRetriever
     {
         private static AffixLookupTable affixLookupTable = AffixLookupTable.Instance;
+        private static SkillLookupTable skillLookupTable = SkillLookupTable.Instance;
 
         /// <summary>
         /// Retrieves all the heroes attached to the specified BattleTag
@@ -52,7 +53,10 @@ namespace Diablo3GearHelper
             // For all the hero entries that were in the JSON response, deserialize them into a hero object
             foreach (JToken token in results)
             {
-                heroes.Add(JsonConvert.DeserializeObject<Hero>(token.ToString()));
+                Hero temp = JsonConvert.DeserializeObject<Hero>(token.ToString());
+
+                if (temp.Level == 70)
+                    heroes.Add(temp);
             }
 
             // Return the list of heroes
@@ -75,34 +79,47 @@ namespace Diablo3GearHelper
             // Parse the JSON response from the web API into a JObject
             JObject heroObject = JObject.Parse(responseString);
 
-            // Extract the information and store it in our hero object
-            ParseHeroInformationIntoObject(heroObject, ref hero);
-        }
-
-        private static void ParseHeroInformationIntoObject(JObject rawInformation, ref Hero hero)
-        {
-            List<JToken> activeSkills = rawInformation["skills"]["active"].Children().ToList();
-            List<JToken> passiveSkills = rawInformation["skills"]["passive"].Children().ToList();
-            List<JToken> items = rawInformation["items"].Children().ToList();
-            JObject itemsObj = rawInformation["items"].Value<JObject>();
+            List<JToken> activeSkills = heroObject["skills"]["active"].Children().ToList();
+            List<JToken> passiveSkills = heroObject["skills"]["passive"].Children().ToList();
+            List<JToken> items = heroObject["items"].Children().ToList();
+            JObject itemsObj = heroObject["items"].Value<JObject>();
             List<JToken> values = itemsObj.Values().ToList();
 
-            Debug.Assert(activeSkills.Count <= hero.ActiveSkills.Length);
+            // Import Active Skill Information
+            Debug.Assert(activeSkills.Count == hero.ActiveSkills.Length);
             for (int i = 0; i < activeSkills.Count; i++)
             {
-                hero.ActiveSkills[i] = (activeSkills[i])["skill"]["name"].Value<string>();
+                string name = (activeSkills[i])["skill"]["name"].Value<string>();
+                string rune = (activeSkills[i])["rune"]["name"].Value<string>();
+                AffixType? SkillDamageType = null;
+                AffixType?  SkillDamageAffix = null;
+
+                SkillLookupTableEntry[] entries = skillLookupTable.Table.Where(entry => entry.Name == name).ToArray();
+
+                if (entries.Count() > 0 && entries.Any(entry => entry.Rune == rune))
+                {
+                    SkillDamageType = entries.Where(entry => entry.Rune == rune).First().SpellSchoolDamageAffix;
+                    SkillDamageAffix = entries.Where(entry => entry.Rune == rune).First().SpellDamageAffix;
+                }
+                else if (entries.Count() > 0)
+                {
+                    SkillDamageType = entries.Where(entry => entry.Rune == null).First().SpellSchoolDamageAffix;
+                    SkillDamageAffix = entries.Where(entry => entry.Rune == null).First().SpellDamageAffix;
+                }
+
+                Skill newSkill = new Skill(name, SkillDamageType, rune, SkillDamageAffix);
+                hero.ActiveSkills[i] = newSkill;
+
             }
 
+            // Import Passive Skill Informations
             Debug.Assert(passiveSkills.Count <= hero.PassiveSkills.Length);
             for (int i = 0; i < passiveSkills.Count; i++)
             {
-                hero.PassiveSkills[i] = (passiveSkills[i])["skill"]["name"].Value<string>();
-            }
+                string name = (passiveSkills[i])["skill"]["name"].Value<string>();
 
-            Debug.Assert(activeSkills.Count <= hero.Runes.Length);
-            for (int i = 0; i < activeSkills.Count; i++)
-            {
-                hero.Runes[i] = (activeSkills[i])["rune"]["name"].Value<string>();
+                Skill newSkill = new Skill(name);
+                hero.PassiveSkills[i] = newSkill;
             }
 
             List<Task> tasks = new List<Task>();

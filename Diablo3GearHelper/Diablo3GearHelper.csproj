@@ -58,7 +58,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Data\SpellLookupTable.cs" />
+    <Compile Include="Data\SkillLookupTable.cs" />
     <Compile Include="Types\Affix.cs" />
     <Compile Include="Data\AffixTable.cs" />
     <Compile Include="Types\AffixTypes.cs" />
@@ -78,6 +78,7 @@
     <Compile Include="Types\ItemTypes\Shoulders.cs" />
     <Compile Include="Types\ItemTypes\Weapon.cs" />
     <Compile Include="Data\MaxStatTable.cs" />
+    <Compile Include="Types\Skill.cs" />
     <Compile Include="WebDataRetriever.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

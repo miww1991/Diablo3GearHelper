@@ -34,6 +34,7 @@ namespace Diablo3GearHelper
             this.CharacterComboBox.SelectedIndex = 0;
             this.CharacterComboBox.IsEnabled = true;
             this.battleTag = GetBattleTag();
+            this.ImportCharacterButton.IsEnabled = true;
 #endif
         }
 
@@ -75,6 +76,7 @@ namespace Diablo3GearHelper
 
             // Enable our ComboBox now that it has items in it
             this.CharacterComboBox.IsEnabled = true;
+            this.ImportCharacterButton.IsEnabled = true;
 
             this.Cursor = Cursors.Arrow;
         }
@@ -117,6 +119,7 @@ namespace Diablo3GearHelper
             }
             ItemComboBox.IsEnabled = true;
             ItemComboBox.SelectedIndex = 0;
+            this.DPSEnchantButton.IsEnabled = true;
 
             this.Cursor = Cursors.Arrow;
         }

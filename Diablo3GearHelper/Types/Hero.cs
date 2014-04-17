@@ -44,17 +44,6 @@ namespace Diablo3GearHelper.Types
         GenderCount
     }
 
-    public struct Spell
-    {
-        public string Name;
-        public string Rune;
-        public Spell(string name, string rune)
-        {
-            Name = name;
-            Rune = rune;
-        }
-    }
-
     public class Hero
     {
         /// <summary>
@@ -67,19 +56,11 @@ namespace Diablo3GearHelper.Types
             "Wizard", "Invalid Class"
         };
 
-        private static readonly Dictionary<string, AffixType> SkillToAffixMap = new Dictionary<string, AffixType>
-        {
-            {"Arcane Torrent", AffixType.ArcaneTorrentDamage},
-            {"Arcane Orb", AffixType.ArcaneOrbDamage},
-            {"Disintegrate", AffixType.DisintegrateDamage},
-            {"Meteor", AffixType.MeteorDamage}
-        };
-
         /// <summary>
         /// The skills of the hero
         /// Note: This will later be updated to be something other than strings
         /// </summary>
-        public string[] ActiveSkills { get; set; }
+        public Skill[] ActiveSkills { get; set; }
 
         /// <summary>
         /// The Hero's Total Attacks Per Second
@@ -96,7 +77,7 @@ namespace Diablo3GearHelper.Types
         {
             get
             {
-                return this.CalculatedBuffedHeroDamage();
+                return this.CalculateBuffedHeroDamage();
             }
         }
 
@@ -151,6 +132,17 @@ namespace Diablo3GearHelper.Types
                     this.AttacksPerSecond,
                     this.GetTotalStat(AffixType.AverageDamage)
                     );
+            }
+        }
+
+        /// <summary>
+        /// The Effective Damage of the Hero. This calculation includes the highest % Skill Dmg and highest % [Damage Type] Damage
+        /// </summary>
+        public int EffectiveDamage
+        {
+            get
+            {
+                return this.CalculateEffectiveHeroDamage();
             }
         }
 
@@ -239,7 +231,7 @@ namespace Diablo3GearHelper.Types
         /// The skills of the hero
         /// Note: This will later be updated to be something other than strings
         /// </summary>
-        public string[] PassiveSkills { get; set; }
+        public Skill[] PassiveSkills { get; set; }
 
         /// <summary>
         /// The Hero's Primary Stat
@@ -276,14 +268,6 @@ namespace Diablo3GearHelper.Types
             }
         }
 
-        private SpellLookupTable SpellTable;
-
-        /// <summary>
-        /// The runes for the hero's skills. These must match up with the Skills indexes.
-        /// Note: This will later be updated to be something other than strings
-        /// </summary>
-        public string[] Runes { get; set; }
-
         /// <summary>
         /// Constructs a Hero Object
         /// </summary>
@@ -298,9 +282,8 @@ namespace Diablo3GearHelper.Types
             this.IsDead = isDead;
             this.Class = charClass;
             this._lastUpdatedEpoch = lastUpdated;
-            this.ActiveSkills = new string[6];
-            this.PassiveSkills = new string[4];
-            this.Runes = new string[6];
+            this.ActiveSkills = new Skill[6];
+            this.PassiveSkills = new Skill[4];
         }
 
         public override string ToString()
@@ -429,39 +412,39 @@ namespace Diablo3GearHelper.Types
             return (int)Math.Round(damage);
         }
 
-        private int CalculatedBuffedHeroDamage()
+        private int CalculateBuffedHeroDamage()
         {
             float damage = this.Damage;
             float bonusDamage = 0.0f;
 
             if (this.Class == ClassType.Wizard)
             {
-                if (this.ActiveSkills.Contains("Energy Armor") && this.Runes.Contains("Pinpoint Barrier"))
+                if (this.ActiveSkills.Any(s => s.Name == "Energy Armor" && s.Rune == "Pinpoint Barrier"))
                 {
                     damage = this.CalculateHeroDamage(this.PrimaryStat, this.CriticalHitChance + 0.05f, this.CriticalHitDamage, this.AttacksPerSecond, this.GetTotalStat(AffixType.AverageDamage));
                 }
 
-                if (this.ActiveSkills.Contains("Magic Weapon"))
+                if (this.ActiveSkills.Any(s => s.Name == "Magic Weapon"))
                 {
                     bonusDamage += 0.10f;
 
-                    if (this.Runes.Contains("Force Weapon"))
+                    if (this.ActiveSkills.Any(s => s.Name == "Magic Weapon" && s.Rune == "Force Weapon"))
                     {
                         bonusDamage += 0.10f;
                     }
                 }
 
-                if (this.ActiveSkills.Contains("Familiar") && this.Runes.Contains("Sparkflint"))
+                if (this.ActiveSkills.Any(s => s.Name == "Familiar" && s.Rune == "Sparkflint"))
                 {
                     bonusDamage += 0.10f;
                 }
 
-                if (this.PassiveSkills.Contains("Glass Cannon"))
+                if (this.PassiveSkills.Any(s => s.Name == "Glass Cannon"))
                 {
                     bonusDamage += 0.15f;
                 }
 
-                if (this.PassiveSkills.Contains("Unwavering Will"))
+                if (this.PassiveSkills.Any(s => s.Name == "Unwavering Will"))
                 {
                     bonusDamage += 0.10f;
                 }
@@ -472,33 +455,39 @@ namespace Diablo3GearHelper.Types
             return (int)Math.Round(damage);
         }
 
-        private int CalculatedEffectiveHeroDamage()
+        private int CalculateEffectiveHeroDamage()
         {
             float damage = this.BuffedDamage;
-            float bonusSkillDamage = 0.0f;
-            float bonusSpellTypeDamage = 0.0f;
-            string bonusedSkill;
+            float HighestBonusSkillDamage = 0.0f;
+            float HighestBonusSpellTypeDamage = 0.0f;
 
-            if (this.Class == ClassType.Wizard)
+            foreach (Skill skill in this.ActiveSkills)
             {
-                for (int i = 0; i < ActiveSkills.Length; i++)//string skill in ActiveSkills)
+                if (skill.BonusSkillDamageAffix != null)
                 {
-                    this.SpellTable.Table.Where(s => s.Name == skill && s.Rune
-                    if (SkillToAffixMap.ContainsKey(skill))
+                    float BonusSkillDamage = this.GetTotalStat((AffixType)skill.BonusSkillDamageAffix);
+                    if (BonusSkillDamage > HighestBonusSkillDamage)
                     {
-                        float tempBonus = this.GetTotalStat(SkillToAffixMap[skill]);
-                        
-                        if (tempBonus > bonusSkillDamage)
+                        HighestBonusSkillDamage = BonusSkillDamage;
+                        if (skill.BonusSkillDamageAffix != null)
                         {
-                            bonusSkillDamage = tempBonus;
-                            bonusedSkill = skill;
+                            HighestBonusSkillDamage = this.GetTotalStat((AffixType)skill.BonusSkillDamageAffix);
                         }
+                    }
+                }
+
+                if (skill.BonusSkillDamageAffix != null)
+                {
+                    float BonusSpellTypeDamage = this.GetTotalStat((AffixType)skill.SkillDamageType);
+                    if (BonusSpellTypeDamage > HighestBonusSkillDamage)
+                    {
+                        HighestBonusSkillDamage = BonusSpellTypeDamage;
                     }
                 }
             }
 
-            damage *= (1.0f + bonusSkillDamage);
-            damage *= (1.0f + bonusSpellTypeDamage);
+            damage *= (1.0f + HighestBonusSkillDamage);
+            damage *= (1.0f + HighestBonusSpellTypeDamage);
 
             return (int)Math.Round(damage);
         }
