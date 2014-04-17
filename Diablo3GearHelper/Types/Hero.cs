@@ -6,6 +6,7 @@ using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Diablo3GearHelper.Data;
 using Newtonsoft.Json.Converters;
 
 namespace Diablo3GearHelper.Types
@@ -41,6 +42,17 @@ namespace Diablo3GearHelper.Types
         Female,
 
         GenderCount
+    }
+
+    public struct Spell
+    {
+        public string Name;
+        public string Rune;
+        public Spell(string name, string rune)
+        {
+            Name = name;
+            Rune = rune;
+        }
     }
 
     public class Hero
@@ -264,6 +276,8 @@ namespace Diablo3GearHelper.Types
             }
         }
 
+        private SpellLookupTable SpellTable;
+
         /// <summary>
         /// The runes for the hero's skills. These must match up with the Skills indexes.
         /// Note: This will later be updated to be something other than strings
@@ -467,8 +481,9 @@ namespace Diablo3GearHelper.Types
 
             if (this.Class == ClassType.Wizard)
             {
-                foreach (string skill in ActiveSkills)
+                for (int i = 0; i < ActiveSkills.Length; i++)//string skill in ActiveSkills)
                 {
+                    this.SpellTable.Table.Where(s => s.Name == skill && s.Rune
                     if (SkillToAffixMap.ContainsKey(skill))
                     {
                         float tempBonus = this.GetTotalStat(SkillToAffixMap[skill]);

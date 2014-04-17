@@ -4,8 +4,9 @@ using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Diablo3GearHelper.Types;
 
-namespace Diablo3GearHelper.Types
+namespace Diablo3GearHelper.Data
 {
     public class AffixLookupTable
     {

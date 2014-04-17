@@ -7,6 +7,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using Diablo3GearHelper.Data;
 using Diablo3GearHelper.Types;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
