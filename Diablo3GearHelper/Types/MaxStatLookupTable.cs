@@ -146,7 +146,7 @@ namespace Diablo3GearHelper.Types
             new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.LightningResistance,  ItemQuality.Rare,       140.0f  ),
             new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.ArcaneResistance,     ItemQuality.Rare,       140.0f  ),
             new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.PoisonResistance,     ItemQuality.Rare,       140.0f  ),
-            new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.BlackHoleDamage,      ItemQuality.Rare,       15.0f   ),
+            new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.MeteorDamage,         ItemQuality.Rare,       15.0f   ),
 
             new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.Intelligence,         ItemQuality.Legendary,  500.0f  ),
             new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.Dexterity,            ItemQuality.Legendary,  500.0f  ),
@@ -162,7 +162,7 @@ namespace Diablo3GearHelper.Types
             new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.LightningResistance,  ItemQuality.Legendary,  160.0f  ),
             new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.ArcaneResistance,     ItemQuality.Legendary,  160.0f  ),
             new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.PoisonResistance,     ItemQuality.Legendary,  160.0f  ),
-            new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.BlackHoleDamage,      ItemQuality.Legendary,  15.0f   ),
+            new MaxStatTableEntry(ItemSlot.Shoulders,   AffixType.MeteorDamage,         ItemQuality.Legendary,  15.0f   ),
 
             /*-----------------------------------------------------------------------------------------------------
                                                           CHEST ARMOR
@@ -182,7 +182,7 @@ namespace Diablo3GearHelper.Types
             new MaxStatTableEntry(ItemSlot.Chest,       AffixType.ArcaneResistance,     ItemQuality.Rare,       140.0f  ),
             new MaxStatTableEntry(ItemSlot.Chest,       AffixType.PoisonResistance,     ItemQuality.Rare,       140.0f  ),
             new MaxStatTableEntry(ItemSlot.Chest,       AffixType.Sockets,              ItemQuality.Rare,       3.0f    ),
-            new MaxStatTableEntry(ItemSlot.Chest,       AffixType.BlackHoleDamage,      ItemQuality.Rare,       15.0f   ),
+            new MaxStatTableEntry(ItemSlot.Chest,       AffixType.MeteorDamage,         ItemQuality.Rare,       15.0f   ),
 
             new MaxStatTableEntry(ItemSlot.Chest,       AffixType.Intelligence,         ItemQuality.Legendary,  500.0f  ),
             new MaxStatTableEntry(ItemSlot.Chest,       AffixType.Dexterity,            ItemQuality.Legendary,  500.0f  ),
@@ -202,7 +202,7 @@ namespace Diablo3GearHelper.Types
             new MaxStatTableEntry(ItemSlot.Chest,       AffixType.PoisonResistance,     ItemQuality.Legendary,  160.0f  ),
             new MaxStatTableEntry(ItemSlot.Chest,       AffixType.FireDamage,           ItemQuality.Legendary,  20.0f,  new string[] { "Cindercoat" }   ),
             new MaxStatTableEntry(ItemSlot.Chest,       AffixType.Sockets,              ItemQuality.Legendary,  3.0f    ),
-            new MaxStatTableEntry(ItemSlot.Chest,       AffixType.BlackHoleDamage,      ItemQuality.Legendary,  15.0f   ),
+            new MaxStatTableEntry(ItemSlot.Chest,       AffixType.MeteorDamage,         ItemQuality.Legendary,  15.0f   ),
 
             /*-----------------------------------------------------------------------------------------------------
                                                             GLOVES
@@ -478,7 +478,7 @@ namespace Diablo3GearHelper.Types
             new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.ArcaneTorrentDamage,  ItemQuality.Rare,       15.0f   ),
             new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.ArcaneOrbDamage,      ItemQuality.Rare,       15.0f   ),
             new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.DisintegrateDamage,   ItemQuality.Rare,       15.0f   ),
-            new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.BlackHoleDamage,      ItemQuality.Rare,       15.0f   ),
+            new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.MeteorDamage,         ItemQuality.Rare,       15.0f   ),
 
             new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.Intelligence,         ItemQuality.Legendary,  750.0f  ),
             new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.Dexterity,            ItemQuality.Legendary,  750.0f  ),
@@ -504,7 +504,7 @@ namespace Diablo3GearHelper.Types
             new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.ArcaneTorrentDamage,  ItemQuality.Legendary,  15.0f   ),
             new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.ArcaneOrbDamage,      ItemQuality.Legendary,  15.0f   ),
             new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.DisintegrateDamage,   ItemQuality.Legendary,  15.0f   ),
-            new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.BlackHoleDamage,      ItemQuality.Legendary,  15.0f   ),
+            new MaxStatTableEntry(ItemSlot.MainHand,    AffixType.MeteorDamage,         ItemQuality.Legendary,  15.0f   ),
 
             /*-----------------------------------------------------------------------------------------------------
                                                             OFF-HANDS
@@ -534,7 +534,7 @@ namespace Diablo3GearHelper.Types
             new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.ArcaneTorrentDamage,  ItemQuality.Rare,       15.0f   ),
             new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.ArcaneOrbDamage,      ItemQuality.Rare,       15.0f   ),
             new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.DisintegrateDamage,   ItemQuality.Rare,       15.0f   ),
-            new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.BlackHoleDamage,      ItemQuality.Rare,       15.0f   ),
+            new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.MeteorDamage,         ItemQuality.Rare,       15.0f   ),
 
             new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.Intelligence,         ItemQuality.Legendary,  750.0f  ),
             new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.Dexterity,            ItemQuality.Legendary,  750.0f  ),
@@ -560,7 +560,7 @@ namespace Diablo3GearHelper.Types
             new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.ArcaneTorrentDamage,  ItemQuality.Legendary,  15.0f   ),
             new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.ArcaneOrbDamage,      ItemQuality.Legendary,  15.0f   ),
             new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.DisintegrateDamage,   ItemQuality.Legendary,  15.0f   ),
-            new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.BlackHoleDamage,      ItemQuality.Legendary,  15.0f   )
+            new MaxStatTableEntry(ItemSlot.OffHand,     AffixType.MeteorDamage,         ItemQuality.Legendary,  15.0f   )
 
         };
 

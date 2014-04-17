@@ -51,6 +51,8 @@ namespace Diablo3GearHelper.Types
         HolyResistance,
         [EnumMember(Value = "Resistance#Physical")]
         PhysicalResistance,
+        [EnumMember(Value = "ignoreMe2")]
+        Armor, // General Armor
 
         // Elemental Damage
         [EnumMember(Value = "Damage_Dealt_Percent_Bonus#Arcane")]
@@ -79,8 +81,8 @@ namespace Diablo3GearHelper.Types
         ArcaneOrbDamage,
         [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_Disintegrate")]
         DisintegrateDamage,
-        [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_BlackHole")]
-        BlackHoleDamage,
+        [EnumMember(Value = "Power_Damage_Percent_Bonus#Wizard_Meteor")]
+        MeteorDamage,
 
         InvalidAffix
     }

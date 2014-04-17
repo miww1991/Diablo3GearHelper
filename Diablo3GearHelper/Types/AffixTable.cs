@@ -64,7 +64,7 @@ namespace Diablo3GearHelper.Types
             new AffixTableEntry("Increases Arcane Torrent Damage by {1}% (Wizard Only)",    AffixQuality.Primary,   AffixType.ArcaneTorrentDamage           ),
             new AffixTableEntry("Increases Arcane Orb Damage by {1}% (Wizard Only)",        AffixQuality.Primary,   AffixType.ArcaneOrbDamage               ),
             new AffixTableEntry("Increases Disintegrate Damage by {1}% (Wizard Only)",      AffixQuality.Primary,   AffixType.DisintegrateDamage            ),
-            new AffixTableEntry("Increases Black Hole Damage by {1}% (Wizard Only)",        AffixQuality.Primary,   AffixType.BlackHoleDamage               )
+            new AffixTableEntry("Increases Meteor Damage by {1}% (Wizard Only)",            AffixQuality.Primary,   AffixType.MeteorDamage                  )
 
         };
 

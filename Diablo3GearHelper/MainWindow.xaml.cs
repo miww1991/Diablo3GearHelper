@@ -92,18 +92,11 @@ namespace Diablo3GearHelper
             watch.Stop();
             TimeSpan ts = watch.Elapsed;
 
-            this.Cursor = Cursors.Arrow;
-
-            float intWeight = hero.CalculateStatWeight(AffixType.Intelligence);
-            float critChanceWeight = hero.CalculateStatWeight(AffixType.CriticalHitChance);
-            float critDamageWeight = hero.CalculateStatWeight(AffixType.CriticalHitDamage);
-            float attackSpeedWeight = hero.CalculateStatWeight(AffixType.AttackSpeed);
-
             float[] weights = new float[4];
-            weights[0] = intWeight;
-            weights[1] = critChanceWeight;
-            weights[2] = critDamageWeight;
-            weights[3] = attackSpeedWeight;
+            weights[0] = hero.CalculateStatWeight(AffixType.Intelligence);
+            weights[1] = hero.CalculateStatWeight(AffixType.CriticalHitChance);
+            weights[2] = hero.CalculateStatWeight(AffixType.CriticalHitDamage);
+            weights[3] = hero.CalculateStatWeight(AffixType.AttackSpeed);
 
             float max = weights.Max();
 
@@ -123,6 +116,9 @@ namespace Diablo3GearHelper
                 ItemComboBox.Items.Add(item);
             }
             ItemComboBox.IsEnabled = true;
+            ItemComboBox.SelectedIndex = 0;
+
+            this.Cursor = Cursors.Arrow;
         }
 
         private void DPSEnchantButton_OnClick(object sender, RoutedEventArgs e)

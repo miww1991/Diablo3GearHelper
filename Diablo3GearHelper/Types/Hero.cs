@@ -55,6 +55,14 @@ namespace Diablo3GearHelper.Types
             "Wizard", "Invalid Class"
         };
 
+        private static readonly Dictionary<string, AffixType> SkillToAffixMap = new Dictionary<string, AffixType>
+        {
+            {"Arcane Torrent", AffixType.ArcaneTorrentDamage},
+            {"Arcane Orb", AffixType.ArcaneOrbDamage},
+            {"Disintegrate", AffixType.DisintegrateDamage},
+            {"Meteor", AffixType.MeteorDamage}
+        };
+
         /// <summary>
         /// The skills of the hero
         /// Note: This will later be updated to be something other than strings
@@ -69,6 +77,14 @@ namespace Diablo3GearHelper.Types
             get
             {
                 return this.Gear.MainHand.AttacksPerSecond * (1 + this.GetTotalStat(AffixType.AttackSpeed));
+            }
+        }
+
+        public int BuffedDamage
+        {
+            get
+            {
+                return this.CalculatedBuffedHeroDamage();
             }
         }
 
@@ -395,6 +411,79 @@ namespace Diablo3GearHelper.Types
             damage *= (critChance * critDamage) + 1.0f; // C - Critical Stats
             damage *= APS; // R - Attacks Per Second
             damage *= averageDamage; // A - Average Damage
+
+            return (int)Math.Round(damage);
+        }
+
+        private int CalculatedBuffedHeroDamage()
+        {
+            float damage = this.Damage;
+            float bonusDamage = 0.0f;
+
+            if (this.Class == ClassType.Wizard)
+            {
+                if (this.ActiveSkills.Contains("Energy Armor") && this.Runes.Contains("Pinpoint Barrier"))
+                {
+                    damage = this.CalculateHeroDamage(this.PrimaryStat, this.CriticalHitChance + 0.05f, this.CriticalHitDamage, this.AttacksPerSecond, this.GetTotalStat(AffixType.AverageDamage));
+                }
+
+                if (this.ActiveSkills.Contains("Magic Weapon"))
+                {
+                    bonusDamage += 0.10f;
+
+                    if (this.Runes.Contains("Force Weapon"))
+                    {
+                        bonusDamage += 0.10f;
+                    }
+                }
+
+                if (this.ActiveSkills.Contains("Familiar") && this.Runes.Contains("Sparkflint"))
+                {
+                    bonusDamage += 0.10f;
+                }
+
+                if (this.PassiveSkills.Contains("Glass Cannon"))
+                {
+                    bonusDamage += 0.15f;
+                }
+
+                if (this.PassiveSkills.Contains("Unwavering Will"))
+                {
+                    bonusDamage += 0.10f;
+                }
+            }
+
+            damage *= (1.0f + bonusDamage);
+
+            return (int)Math.Round(damage);
+        }
+
+        private int CalculatedEffectiveHeroDamage()
+        {
+            float damage = this.BuffedDamage;
+            float bonusSkillDamage = 0.0f;
+            float bonusSpellTypeDamage = 0.0f;
+            string bonusedSkill;
+
+            if (this.Class == ClassType.Wizard)
+            {
+                foreach (string skill in ActiveSkills)
+                {
+                    if (SkillToAffixMap.ContainsKey(skill))
+                    {
+                        float tempBonus = this.GetTotalStat(SkillToAffixMap[skill]);
+                        
+                        if (tempBonus > bonusSkillDamage)
+                        {
+                            bonusSkillDamage = tempBonus;
+                            bonusedSkill = skill;
+                        }
+                    }
+                }
+            }
+
+            damage *= (1.0f + bonusSkillDamage);
+            damage *= (1.0f + bonusSpellTypeDamage);
 
             return (int)Math.Round(damage);
         }
