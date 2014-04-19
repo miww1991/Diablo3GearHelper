@@ -55,6 +55,10 @@ namespace Diablo3GearHelper.Types
                 {
                     total += (item as Weapon).AverageDamage;
                 }
+                else if (affixType == AffixType.Armor)
+                {
+                    total += item.BaseArmor;
+                }
                 else if (item != null)
                 {
                     total += item.GetStatValue(affixType);

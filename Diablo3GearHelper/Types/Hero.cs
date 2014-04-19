@@ -46,6 +46,8 @@ namespace Diablo3GearHelper.Types
 
     public class Hero
     {
+        const int HealthPerVitality = 80;
+
         /// <summary>
         /// An array of strings that correlate with the classes in Diablo 3.
         /// Indexes must match up with the classes enumeration
@@ -146,6 +148,17 @@ namespace Diablo3GearHelper.Types
             }
         }
 
+        /// <summary>
+        /// The Effective Health of the Hero
+        /// </summary>
+        public int EffectiveHealth
+        {
+            get
+            {
+                return this.CalculateEffectiveHealth();
+            }
+        }
+
         private Gear _gear = new Gear();
 
         /// <summary>
@@ -176,7 +189,7 @@ namespace Diablo3GearHelper.Types
         {
             get
             {
-                return (int)Math.Round(((this.GetTotalStat(AffixType.Vitality) * 80) + 316) * (1 + this.GetTotalStat(AffixType.PercentLife)));
+                return this.CalculateHealth(this.GetTotalStat(AffixType.Vitality), this.GetTotalStat(AffixType.PercentLife));
             }
         }
 
@@ -301,8 +314,6 @@ namespace Diablo3GearHelper.Types
         public int GetTotalPrimaryStat()
         {
             int value = (int)this.GetTotalStat(this.PrimaryStatType);
-            value += 10; // Base Primary Stat
-            value += (this.Level * 3); // Points per level
 
             return value;
         }
@@ -316,7 +327,22 @@ namespace Diablo3GearHelper.Types
         {
             float value = this.Gear.GetStatTotal(statToGet);
 
-            if (statToGet == AffixType.Vitality)
+            if (statToGet == AffixType.Intelligence
+             || statToGet == AffixType.Strength
+             || statToGet == AffixType.Dexterity)
+            {
+                if (statToGet == this.PrimaryStatType)
+                {
+                    value += 10;
+                    value += ((this.Level - 1) * 3);
+                }
+                else
+                {
+                    value += 8;
+                    value += (this.Level - 1);
+                }
+            }
+            else if (statToGet == AffixType.Vitality)
             {
                 value += (this.Level * 2) + 7;
             }
@@ -326,6 +352,7 @@ namespace Diablo3GearHelper.Types
 
         public float CalculateStatWeight(AffixType statToCalculate)
         {
+            int newEHP = 0;
             int newDamage = 0;
             float weight = 0;
 
@@ -385,6 +412,41 @@ namespace Diablo3GearHelper.Types
                     weight = newDamage - this.Damage;
 
                     break;
+
+                case AffixType.AverageDamage:
+                    newDamage = CalculateHeroDamage
+                                    (
+                                    this.PrimaryStat,
+                                    this.CriticalHitChance,
+                                    this.CriticalHitDamage,
+                                    this.AttacksPerSecond,
+                                    this.GetTotalStat(AffixType.AverageDamage) + 1
+                                    );
+
+                    weight = newDamage - this.Damage;
+
+                    break;
+
+                case AffixType.Armor:
+                    newEHP = CalculateEffectiveHealth(AffixType.Armor);
+                    weight = newEHP - this.EffectiveHealth;
+                    break;
+
+                case AffixType.Vitality:
+                    newEHP = CalculateEffectiveHealth(AffixType.Vitality);
+                    weight = newEHP - this.EffectiveHealth;
+                    break;
+
+                case AffixType.PercentLife:
+                    newEHP = CalculateEffectiveHealth(AffixType.PercentLife);
+                    weight = newEHP - this.EffectiveHealth;
+                    break;
+
+                case AffixType.AllResistances:
+                    newEHP = CalculateEffectiveHealth(AffixType.AllResistances);
+                    weight = newEHP - this.EffectiveHealth;
+                    break;
+
                 default:
                     throw new NotImplementedException();
             }
@@ -416,6 +478,7 @@ namespace Diablo3GearHelper.Types
         {
             float damage = this.Damage;
             float bonusDamage = 0.0f;
+            bonusDamage = this.CalculateWeaponDamageBonusFromSkills(this.Class);
 
             if (this.Class == ClassType.Wizard)
             {
@@ -423,7 +486,19 @@ namespace Diablo3GearHelper.Types
                 {
                     damage = this.CalculateHeroDamage(this.PrimaryStat, this.CriticalHitChance + 0.05f, this.CriticalHitDamage, this.AttacksPerSecond, this.GetTotalStat(AffixType.AverageDamage));
                 }
+            }
 
+            damage *= (1.0f + bonusDamage);
+
+            return (int)Math.Round(damage);
+        }
+
+        private float CalculateWeaponDamageBonusFromSkills(ClassType classType)
+        {
+            float bonusDamage = 0.0f;
+
+            if (this.Class == ClassType.Wizard)
+            {
                 if (this.ActiveSkills.Any(s => s.Name == "Magic Weapon"))
                 {
                     bonusDamage += 0.10f;
@@ -450,9 +525,7 @@ namespace Diablo3GearHelper.Types
                 }
             }
 
-            damage *= (1.0f + bonusDamage);
-
-            return (int)Math.Round(damage);
+            return bonusDamage;
         }
 
         private int CalculateEffectiveHeroDamage()
@@ -481,15 +554,94 @@ namespace Diablo3GearHelper.Types
                     float BonusSpellTypeDamage = this.GetTotalStat((AffixType)skill.SkillDamageType);
                     if (BonusSpellTypeDamage > HighestBonusSkillDamage)
                     {
-                        HighestBonusSkillDamage = BonusSpellTypeDamage;
+                        HighestBonusSpellTypeDamage = BonusSpellTypeDamage;
                     }
                 }
             }
 
-            damage *= (1.0f + HighestBonusSkillDamage);
+            damage *= (1.0f + HighestBonusSkillDamage );
             damage *= (1.0f + HighestBonusSpellTypeDamage);
 
             return (int)Math.Round(damage);
+        }
+
+        private int CalculateEffectiveHealth(AffixType typeToIncrease = AffixType.InvalidAffix)
+        {
+            float BaseArmor = this.GetTotalStat(AffixType.Armor) + this.GetTotalStat(AffixType.Strength);
+
+            if (typeToIncrease == AffixType.Armor)
+            {
+                BaseArmor += 1;
+            }
+
+            float armorMod = 1.0f;
+            float resistanceMod = 1.0f;
+            if (this.ActiveSkills.Any(skill => skill.Name == "Energy Armor"))
+            {
+                armorMod += 0.35f;
+                if (this.ActiveSkills.Any(skill => skill.Rune == "Prismatic Armor"))
+                {
+                    resistanceMod += 0.25f;
+                }
+            }
+
+            if (this.PassiveSkills.Any(skill => skill.Name == "Glass Cannon"))
+            {
+                armorMod -= 0.10f;
+                resistanceMod -= 0.10f;
+            }
+
+            if (this.PassiveSkills.Any(skill => skill.Name == "Unwavering Will"))
+            {
+                armorMod += 0.20f;
+                resistanceMod += 0.20f;
+            }
+
+            float ActualArmor = BaseArmor * armorMod;
+            float ArmorReduction = ActualArmor / ( (50 * 73) + ActualArmor );
+
+            float BaseAllResists = this.GetTotalStat(AffixType.AllResistances) + ( this.GetTotalStat(AffixType.Intelligence) / 10 );
+
+            if (typeToIncrease == AffixType.AllResistances)
+            {
+                BaseAllResists += 1;
+            }
+
+            float ActualAllResists = BaseAllResists * resistanceMod;
+            float AllResistsReduction = ActualAllResists / ( ( 5 * 73 ) + ActualAllResists );
+
+            float blurMod = 0.0f;
+            if (this.PassiveSkills.Any(skill => skill.Name == "Blur"))
+            {
+                blurMod = 0.17f;
+            }
+
+            float DamageReduction = 1.0f - ( ( 1.0f - ArmorReduction ) * ( 1.0f - AllResistsReduction ) * ( 1.0f - blurMod ));
+
+            // Total Life  /  (1 - Total Damage Reduction)
+            int health = 0;
+
+            if (typeToIncrease == AffixType.Vitality)
+            {
+                health = this.CalculateHealth(this.GetTotalStat(AffixType.Vitality) + 1, this.GetTotalStat(AffixType.PercentLife));
+            }
+            else if (typeToIncrease == AffixType.PercentLife)
+            {
+                health = this.CalculateHealth(this.GetTotalStat(AffixType.Vitality), this.GetTotalStat(AffixType.PercentLife) + 0.01f);
+            }
+            else
+            {
+                health = this.Health;
+            }
+
+            float EHP = health / (1 - DamageReduction);   // Total Life  /  (1 - Total Damage Reduction)
+
+            return (int)Math.Round(EHP);
+        }
+
+        private int CalculateHealth(float Vitality, float PercentLife)
+        {
+            return (int)Math.Round(((Vitality * HealthPerVitality) + 316) * (1 + PercentLife));
         }
     }
 }

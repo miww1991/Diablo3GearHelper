@@ -16,8 +16,6 @@ namespace Diablo3GearHelper.Types
 
     public class OffHand : Item
     {
-        public int BaseArmor { get; protected set; }
-
         public OffHandType Type { get; protected set; }
 
         public OffHand() : base(ItemSlot.OffHand) { }

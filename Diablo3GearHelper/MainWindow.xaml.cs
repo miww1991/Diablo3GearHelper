@@ -7,6 +7,9 @@ using System.Diagnostics;
 using System;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Controls;
+using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Diablo3GearHelper
 {
@@ -16,7 +19,11 @@ namespace Diablo3GearHelper
     public partial class MainWindow : Window
     {
         private Hero[] _heroes;
+        private Hero selectedHero;
         private string battleTag;
+
+        private List<string> DPSStrings = new List<string>(new string[] { "Critical Hit Chance", "Critical Hit Damage", "Attack Speed", "Average Damage" });
+        private readonly string[] EHPStrings = { "Vitality", "% Life", "Armor", "All Resistances" };
 
         public MainWindow()
         {
@@ -94,32 +101,29 @@ namespace Diablo3GearHelper
             watch.Stop();
             TimeSpan ts = watch.Elapsed;
 
-            float[] weights = new float[4];
-            weights[0] = hero.CalculateStatWeight(AffixType.Intelligence);
-            weights[1] = hero.CalculateStatWeight(AffixType.CriticalHitChance);
-            weights[2] = hero.CalculateStatWeight(AffixType.CriticalHitDamage);
-            weights[3] = hero.CalculateStatWeight(AffixType.AttackSpeed);
-
-            float max = weights.Max();
-
-            float[] rounded = new float[4];
-            for (int i = 0; i < weights.Length; i++)
+            if (this.selectedHero != null)
             {
-                weights[i] = max / weights[i];
-                rounded[i] = (float)Math.Round(weights[i], 1);
+                this.DPSStrings.Remove(this.selectedHero.PrimaryStatType.ToString());
+            }
+            this.DPSStrings.Insert(0, hero.PrimaryStatType.ToString());
+
+            this.selectedHero = hero;
+            this.Stat1.Items.Clear();
+            foreach (string item in this.DPSStrings)
+            {
+                this.Stat1.Items.Add(item);
             }
 
-            string text = rounded[0].ToString() + " " + hero.PrimaryStatType.ToString() + " = " + rounded[1].ToString();
-            text += "% Critical Chance = " + rounded[2].ToString() + "% Critical Damage = " + rounded[3].ToString() + "% Attack Speed";
-            this.StatWeightText.Text = text;
-
-            foreach (Item item in hero.Gear)
+            foreach (string item in this.EHPStrings)
             {
-                ItemComboBox.Items.Add(item);
+                this.Stat1.Items.Add(item);
             }
-            ItemComboBox.IsEnabled = true;
-            ItemComboBox.SelectedIndex = 0;
-            this.DPSEnchantButton.IsEnabled = true;
+
+            this.Stat1.SelectedIndex = 0;
+            this.Stat1.IsEnabled = true;
+            this.Stat1Amount.IsEnabled = true;
+            this.Stat2.IsEnabled = true;
+            this.Stat2Amount.IsEnabled = true;
 
             this.Cursor = Cursors.Arrow;
         }
@@ -129,6 +133,108 @@ namespace Diablo3GearHelper
             Item item = this.ItemComboBox.SelectedItem as Item;
         }
 
+        private void Stat1Amount_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (!((e.Key >= Key.D0 && e.Key <= Key.D9) || (e.Key >= Key.NumPad0 && e.Key <= Key.NumPad9) || e.Key == Key.Decimal || e.Key == Key.OemPeriod))
+            {
+                e.Handled = true;
+            }
+            else
+            {
+                TextBox textBox = sender as TextBox;
+                int idx = textBox.SelectionStart;
+                int percentIdx = textBox.Text.IndexOf('%');
+
+                if (percentIdx >= 0 && idx > percentIdx)
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void Stat1Amount_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            int idx = textBox.SelectionStart;
+            int percentIdx = textBox.Text.IndexOf('%');
+
+            if (e.Key == Key.Delete)
+            {
+                if (idx == percentIdx)
+                {
+                    e.Handled = true;
+                }
+            }
+            else if (e.Key == Key.Back)
+            {
+                if (idx == percentIdx + 1)
+                {
+                    e.Handled = true;
+                }
+            }
+        }
+
+        private void Stat1_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox textBox = sender as ComboBox;
+
+            if (textBox.SelectedItem != null)
+            {
+                this.Stat2.Items.Clear();
+
+                string selectedItem = (string)textBox.SelectedItem;
+
+                if (this.DPSStrings.Contains(selectedItem))
+                {
+                    foreach (string item in this.DPSStrings.Where(s => s != selectedItem))
+                    {
+                        this.Stat2.Items.Add(item);
+                    }
+                }
+                else
+                {
+                    Debug.Assert(this.EHPStrings.Contains(selectedItem));
+
+                    foreach (string item in this.EHPStrings.Where(s => s != selectedItem))
+                    {
+                        this.Stat2.Items.Add(item);
+                    }
+                }
+
+                if (selectedItem == "Critical Hit Chance"
+                 || selectedItem == "Critical Hit Damage"
+                 || selectedItem == "Attack Speed"
+                 || selectedItem == "% Life")
+                {
+                    if (!this.Stat1Amount.Text.Contains('%'))
+                    {
+                        this.Stat1Amount.Text += '%';
+                    }
+                }
+
+                this.Stat2.SelectedIndex = 0;
+            }
+        }
+
+        private void Stat1Amount_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox tBox = sender as TextBox;
+
+            UpdateStatEquivalencies();
+        }
+
+        private void Stat2_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = sender as ComboBox;
+
+            if (comboBox.Items.Count > 0)
+            {
+                comboBox.SelectedItem = comboBox.Items[comboBox.SelectedIndex];
+                UpdateStatEquivalencies();
+            }
+        }
+
+        // Helper method
         private string GetBattleTag()
         {
             string[] tokens = this.BTagNameTextBox.Text.Split(new char[] { '#', '-' });
@@ -138,6 +244,63 @@ namespace Diablo3GearHelper
             }
 
             return tokens[0] + "-" + tokens[1];
+        }
+
+        // Helper method
+        private AffixType StringToAffix(string stringToConvert)
+        {
+            AffixType retValue;
+
+            stringToConvert = stringToConvert.Replace("%", "Percent");
+            stringToConvert = stringToConvert.Replace(" ", "");
+            bool success = Enum.TryParse<AffixType>(stringToConvert, out retValue);
+
+            if (success)
+            {
+                return retValue;
+            }
+            else
+            {
+                return AffixType.InvalidAffix;
+            }
+        }
+
+        // Helper method
+        private void UpdateStatEquivalencies()
+        {
+            float result = 0.0f;
+            string textToParse = this.Stat1Amount.Text.Replace("%", "");
+            bool canParse = float.TryParse(textToParse, out result);
+
+            if (canParse && this.Stat2.SelectedItem != null)
+            {
+                AffixType affix1 = this.StringToAffix((string)this.Stat1.SelectedItem);
+                AffixType affix2 = this.StringToAffix((string)this.Stat2.SelectedItem);
+
+                float weight1 = this.selectedHero.CalculateStatWeight(affix1);
+                float weight2 = this.selectedHero.CalculateStatWeight(affix2);
+
+                float multiplier = (weight2 / weight1) / result;
+
+                float displayNum = (float)Math.Round(1 / multiplier, 2);
+                string selectedItem = this.Stat2.SelectedItem as string;
+
+                if (selectedItem == "Critical Hit Chance"
+                 || selectedItem == "Critical Hit Damage"
+                 || selectedItem == "Attack Speed"
+                 || selectedItem == "% Life")
+                {
+                    this.Stat2Amount.Text = displayNum.ToString() + "%";
+                }
+                else
+                {
+                    this.Stat2Amount.Text = displayNum.ToString();
+                }
+            }
+            else
+            {
+                this.Stat2Amount.Text = "";
+            }
         }
     }
 }

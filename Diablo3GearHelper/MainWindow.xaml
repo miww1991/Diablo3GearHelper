@@ -23,15 +23,21 @@
         <TextBox Name="BTagNameTextBox"
                  Width="120"
                  Canvas.Left="68" Canvas.Top="20"/>
-        <TextBlock Name="StatWeightText" Text=""
+        <TextBlock Name="StatEquivalencyText" Text="Stat Equivalencies"
                    Height="22"
-                   Canvas.Left="10" Canvas.Top="100"/>
+                   Canvas.Left="152" Canvas.Top="92" FontWeight="Bold"/>
         <ComboBox Name="CharacterComboBox"  Canvas.Left="105" Canvas.Top="65" Width="173" IsEnabled="False"/>
-        <ComboBox Name="ItemComboBox"  Canvas.Left="10" Canvas.Top="137" Width="120" IsEnabled="False"/>
+        <ComboBox Name="ItemComboBox"  Canvas.Left="10" Canvas.Top="238" Width="120" IsEnabled="False"/>
         <Button x:Name="DPSEnchantButton" Click="DPSEnchantButton_OnClick" IsEnabled="False"
             Width="143" Height="25"
-            Canvas.Left="135" Canvas.Top="134">
+            Canvas.Left="135" Canvas.Top="235">
             <TextBlock>Choose Best DPS Enchant</TextBlock>
         </Button>
+        <TextBox Name="Stat1Amount" Height="23" Canvas.Left="10" Text="" Canvas.Top="119" Width="50" IsEnabled="False" TextChanged="Stat1Amount_TextChanged" KeyDown="Stat1Amount_KeyDown" PreviewKeyDown="Stat1Amount_PreviewKeyDown"/>
+        <ComboBox Name="Stat1" Canvas.Left="65" Canvas.Top="119" Width="130" IsEnabled="False" SelectionChanged="Stat1_SelectionChanged"/>
+        <TextBox Name="Stat2Amount" Height="23" Canvas.Left="213" Text="" Canvas.Top="119" Width="50" IsReadOnly="True" IsEnabled="False" RenderTransformOrigin="1.16,0.522"/>
+        <ComboBox Name ="Stat2" Canvas.Left="268" Canvas.Top="120" Width="130" IsEnabled="False" SelectionChanged="Stat2_SelectionChanged"/>
+        <TextBlock Canvas.Left="200" TextWrapping="Wrap" Text="=" Canvas.Top="120"/>
+        <TextBlock Canvas.Left="10" TextWrapping="Wrap" Text="* Note that Intelligence, Strength, and Dexterity boost your defense as well your as damage" Canvas.Top="147" Width="378"/>
     </Canvas>
 </Window>

@@ -118,7 +118,7 @@ namespace Diablo3GearHelper
             {
                 string name = (passiveSkills[i])["skill"]["name"].Value<string>();
 
-                Skill newSkill = new Skill(name);
+                Skill newSkill = new Skill(name);   
                 hero.PassiveSkills[i] = newSkill;
             }
 
@@ -332,6 +332,11 @@ namespace Diablo3GearHelper
                     }
                     catch (JsonSerializationException) { }
                 }
+            }
+
+            if (heroObject["armor"] != null)
+            {
+                item.BaseArmor = GetAverageValueInt(heroObject["armor"]);
             }
 
             switch (item.Slot)

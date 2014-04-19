@@ -65,6 +65,11 @@ namespace Diablo3GearHelper.Types
     public class Item
     {
         /// <summary>
+        /// The base armor on the item
+        /// </summary>
+        public int BaseArmor { get; set; }
+
+        /// <summary>
         /// Is the item Enchanted?
         /// </summary>
         public bool Enchanted

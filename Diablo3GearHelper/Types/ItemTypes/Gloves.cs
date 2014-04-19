@@ -8,8 +8,6 @@ namespace Diablo3GearHelper.Types
 {
     public class Gloves : Item
     {
-        public int BaseArmor { get; protected set; }
-
         public Gloves() : base(ItemSlot.Gloves) { }
 
         public override string ToString()
