@@ -361,8 +361,8 @@ namespace Diablo3GearHelper
 
         private static int GetAverageValueInt(JToken container)
         {
-            int min = JsonConvert.DeserializeObject<int>(container["min"].ToString());
-            int max = JsonConvert.DeserializeObject<int>(container["max"].ToString());
+            int min = (int)Math.Round(JsonConvert.DeserializeObject<float>(container["min"].ToString()));
+            int max = (int)Math.Round(JsonConvert.DeserializeObject<float>(container["max"].ToString()));
             int average = (min + max) / 2;
             return average;
         }
